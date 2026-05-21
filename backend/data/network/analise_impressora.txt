@@ -1,0 +1,6 @@
+[*] Análise estratégica da impressora 192.168.1.6
+==================================================
+ip: 192.168.1.6
+mac: 50:57:9c:7e:4a:3d
+posicao_estimada: POSSIVEL_PIVO
+risco_estrategico: ALTO

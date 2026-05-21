@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+venv/
+ENV/
+
+# Windsurf / VS Code
+.vscode/
+.codeium/
+*.code-workspace
+
+# Kali / Security Tools logs
+*.log
+nmap_results.*
+ffuf_out.*
+
+# OS generated files
+.DS_Store
+Thumbs.db

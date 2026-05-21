@@ -1,0 +1,12 @@
+[*] Dispositivos classificados em 2026-05-09 20:03:22.983317
+============================================================
+IP: 192.168.1.6
+Tipo: IMPRESSORA
+Localização: AREA_COMUM
+Serviços: HTTP, HTTPS, Impressora, Impressora
+----------------------------------------
+IP: 192.168.1.10
+Tipo: DESCONHECIDO
+Localização: INDETERMINADO
+Serviços: HTTP
+----------------------------------------

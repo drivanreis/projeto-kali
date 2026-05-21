@@ -1,0 +1,27 @@
+{
+  "ferramentas_executadas": [
+    "whois",
+    "nikto",
+    "whois",
+    "nikto",
+    "gobuster",
+    "gobuster",
+    "searchsploit",
+    "whois"
+  ],
+  "vulnerabilidades_encontradas": [],
+  "provas_acesso": [
+    {
+      "timestamp": "2026-05-15 17:28:18",
+      "tipo": "gobuster",
+      "prova": "Diret\u00f3rios enumerados via GOBUSTER"
+    }
+  ],
+  "asn_info": {
+    "org": "Latin American and Caribbean IP address Regional Registry"
+  },
+  "cgnat_detectado": false,
+  "subdominios_encontrados": [],
+  "bandeiras_disponiveis": [],
+  "ultima_verificacao": "2026-05-15 18:55:08"
+}

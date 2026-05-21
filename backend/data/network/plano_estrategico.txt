@@ -1,0 +1,22 @@
+[*] PLANO ESTRATÉGICO - 2026-05-09 20:03:26.522338
+============================================================
+
+FASE ATUAL:
+  RECON_TOPOLOGICO
+
+PRÓXIMOS PASSOS:
+  1. Verificar se impressora 192.168.1.6 é pivô para rede Blue
+  2. Monitorar tráfego da impressora por 10 minutos
+  3. Tentar acesso administrativo na impressora
+  4. Se for pivô, usar para saltar para rede Blue
+  5. Se não for pivô, usar como isca para detectar Blue Team
+
+ALVOS PRIORITÁRIOS:
+  - 138.122.82.214 - Servidor principal
+  - 192.168.1.6 - Possível pivô/impressora
+  - 192.168.1.254 - Gateway
+
+RISCOS IDENTIFICADOS:
+  - Time Blue pode estar monitorando ativamente
+  - Impressora pode ter proteções
+  - Gateway pode ter IPS/IDS

@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-05-15 18:52:11",
+  "motivo": "Gatilho autom\u00e1tico: porta 80/443 ou 404 detectado",
+  "tipo_servidor": "Unknown",
+  "portas_abertas": [
+    80,
+    443
+  ]
+}

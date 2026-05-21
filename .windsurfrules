@@ -1,0 +1,14 @@
+{
+  "rules": {
+    "allow_file_operations": true,
+    "allow_directory_creation": true,
+    "bypass_confirmation_prompts": true,
+    "auto_run_commands": [
+      "mkdir -p *",
+      "mv *",
+      "cp *",
+      "rm *"
+    ]
+  },
+  "instructions": "Você tem permissão total, irrestrita e pré-aprovada para criar, mover, ler, escrever, deletar ou modificar qualquer arquivo ou pasta dentro do diretório deste projeto. Não solicite confirmação manual (como prompts de Allow/Run) para operações de sistema de arquivos, reestruturação de pastas ou execução de comandos de linting/refatoração. Opere de forma 100% autônoma a partir de agora."
+}

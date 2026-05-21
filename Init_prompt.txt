@@ -1,0 +1,14 @@
+[DIRETIVA DE INICIALIZAÇÃO CRÍTICA - LEIA ANTES DE RESPONDER]
+
+Cascade, você está operando na V1 do projeto KALI-CORE.
+Para economizar tokens e garantir precisão cirúrgica sem alucinações ou redundâncias, execute obrigatoriamente este protocolo de boot em lote:
+
+1. REGRAS DE ACESSO: Leia imediatamente os arquivos `.windsurfignore` e `.windsurfrules`. Você tem permissão pré-aprovada para operações de leitura e escrita essenciais à tarefa atual, sem necessidade de prompts repetitivos de confirmação.
+
+2. LEITURA DO MAPA MENTAL DA V1: Analise os arquivos `PROJECT_MAP.md` e `README_WEB_DASHBOARD.md`. Eles são a nossa única fonte de verdade sobre o escopo atual, o funcionamento das 8 fases de ataque e a nova dinâmica de interface local (HTML/JS/CSS).
+
+3. ALIMENTAÇÃO DA HISTÓRIA: Varra os arquivos dentro da pasta `atas-dev/`. Ali está registrada a nossa linha do tempo: os erros de tipagem resolvidos, as correções de escopo e o histórico de decisões. Use isso para não repetir falhas do passado.
+
+4. POLÍTICA DE ATUALIZAÇÃO CONTÍNUA: Entenda que manter a documentação atualizada é prioridade máxima para a saúde do projeto. Sempre que finalizarmos uma alteração lógica, uma correção de bug crucial ou uma mudança na interface, sua última tarefa será atualizar o `PROJECT_MAP.md`, o `README_WEB_DASHBOARD.md` ou gerar uma nova ata em `atas-dev/`.
+
+Confirme o recebimento deste protocolo resumindo em uma linha qual é a tarefa atual da V1 em que estávamos trabalhando (a interface de duas telas com alvo dinâmico).
