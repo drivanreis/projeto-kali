@@ -1,0 +1,18 @@
+[DIRETIVA DE EXECUÇÃO - FASE DE MAPEAMENTO DA INTERFACE]
+
+Cascade, agora que você já carregou o contexto da V1, precisamos mapear
+ o código real para garantir que não haverá quebra de escopo. 
+
+Execute as seguintes operações:
+1. Localize e inspecione os arquivos principais da interface web local
+ (procure por arquivos .html, .js ou .css na raiz ou nas pastas indicadas
+  no README_WEB_DASHBOARD.md).
+2. Sem alterar nenhuma linha de código ainda, apresente um resumo cirúrgico
+ da estrutura atual do arquivo da tela de visualização (onde o alvo dinâmico
+  é renderizado).
+
+O objetivo é apenas validar se você consegue ler o arquivo de código
+ completo sem interrupções ou falhas de comunicação com o servidor.
+ Se a leitura for bem-sucedida, liste as tags principais ou componentes
+  estruturais que você identificou na tela atual.
+  
