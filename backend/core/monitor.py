@@ -14,7 +14,9 @@ from datetime import datetime
 import psutil
 
 class MonitorModule:
-    def __init__(self, target="138.122.82.214"):
+    def __init__(self, target):
+        if not target:
+            raise ValueError("Alvo (target) é obrigatório para inicializar MonitorModule")
         self.target = target
         self.running = False
         self.status = {

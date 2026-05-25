@@ -23,7 +23,9 @@ from models import DatabaseManager
 class ArsenalModule:
     """Módulo para orquestrar ferramentas nativas do Kali Linux."""
 
-    def __init__(self, target: str = "138.122.82.214"):
+    def __init__(self, target: str):
+        if not target:
+            raise ValueError("Alvo (target) é obrigatório para inicializar ArsenalModule")
         self.target = target
         self.running = False
         self.process_lock = threading.Lock()  # Trava para evitar reinício de processos

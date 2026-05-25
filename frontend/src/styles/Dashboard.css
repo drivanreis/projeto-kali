@@ -1,0 +1,99 @@
+/* 
+ * Dashboard.css - Estilos específicos para o Dashboard
+ * Container principal da aplicação
+ */
+
+.dashboard-container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Left column - Operations */
+.dashboard-left {
+  grid-column: span 12;
+}
+
+@media (min-width: 768px) {
+  .dashboard-left {
+    grid-column: span 6;
+  }
+}
+
+/* Right column - Info */
+.dashboard-right {
+  grid-column: span 12;
+}
+
+@media (min-width: 768px) {
+  .dashboard-right {
+    grid-column: span 6;
+  }
+}
+
+/* Header styling */
+.dashboard-header {
+  border-bottom: 1px solid #00aa00;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-header h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  margin: 0;
+}
+
+/* Status panels */
+.status-panel {
+  border: 1px solid #00aa00;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: #000;
+}
+
+.status-panel-title {
+  color: #00ff00;
+  font-weight: bold;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+  font-family: 'Courier New', monospace;
+}
+
+.status-panel-content {
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  line-height: 1.8;
+}
+
+/* Buttons grid */
+.buttons-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+/* Animations for dashboard */
+@keyframes terminal-glow {
+  0% {
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+  }
+  100% {
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+  }
+}
+
+.dashboard-header h1:hover {
+  animation: terminal-glow 1s ease-in-out infinite;
+}

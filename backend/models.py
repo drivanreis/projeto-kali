@@ -5,16 +5,128 @@ Histórico de Ataques para Fine-Tuning do Professor Kali
 """
 
 import os
-from sqlalchemy import create_engine, Column, Integer, String, Text, Boolean, DateTime, Float
+from sqlalchemy import create_engine, Column, Integer, String, Text, Boolean, DateTime, Float, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
 import json
 
 Base = declarative_base()
 
+class Alvo(Base):
+    """Tabela 1: Alvos únicos"""
+    __tablename__ = 'alvos'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ip_dominio = Column(String(255), unique=True, nullable=False)
+    data_criacao = Column(DateTime, default=datetime.now)
+    
+    # Relacionamentos
+    config_ataques = relationship("ConfigAtaque", back_populates="alvo")
+    operacoes = relationship("HistoricoOperacoes", back_populates="alvo")
+
+
+class ConfigAtaque(Base):
+    """Tabela 2: Configurações técnicas de ataque"""
+    __tablename__ = 'config_ataque'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    alvo_id = Column(Integer, ForeignKey('alvos.id'), nullable=False)
+    porta = Column(Integer)
+    protocolo = Column(String(50))
+    servico_detectado = Column(String(100))
+    timestamp = Column(DateTime, default=datetime.now)
+    
+    # Relacionamento
+    alvo = relationship("Alvo", back_populates="config_ataques")
+    operacoes = relationship("HistoricoOperacoes", back_populates="config")
+
+
+class HistoricoOperacoes(Base):
+    """Tabela 3: Histórico de operações e fases de ataque"""
+    __tablename__ = 'historico_operacoes'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    alvo_id = Column(Integer, ForeignKey('alvos.id'), nullable=False)
+    config_id = Column(Integer, ForeignKey('config_ataque.id'))
+    
+    # Informações da operação
+    attack_phase = Column(String(50))  # Fase 1-8
+    attack_type = Column(String(100))  # nikto, gobuster, dnsrecon, etc
+    payload = Column(Text)
+    
+    # Resultados
+    success = Column(Boolean, default=False)
+    response_code = Column(Integer)
+    response_data = Column(Text)  # JSON
+    
+    # Metadados
+    status_fase = Column(String(50))  # pendente, em_progresso, concluido, falhou
+    timestamp = Column(DateTime, default=datetime.now)
+    duration_ms = Column(Float)
+    error_message = Column(Text)
+    lesson_learned = Column(Text)
+    confidence_score = Column(Float, default=0.5)
+    
+    # Relacionamentos
+    alvo = relationship("Alvo", back_populates="operacoes")
+    config = relationship("ConfigAtaque", back_populates="operacoes")
+    analises = relationship("AnaliseEstrategica", back_populates="operacao")
+    vulnerabilidades = relationship("VulnerabilidadesOcorrencias", back_populates="operacao")
+
+
+class AnaliseEstrategica(Base):
+    """Tabela 4: Motor de análise estratégica"""
+    __tablename__ = 'analise_estrategica'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    operacao_id = Column(Integer, ForeignKey('historico_operacoes.id'), nullable=False)
+    
+    # Inteligência consolidada
+    tempo_estimado_invasao = Column(Integer)  # em segundos
+    criticidade = Column(String(20))  # baixa, media, alta, critica
+    flags_detectadas = Column(Text)  # JSON list de flags
+    recomendacao_invisibilidade = Column(Text)  # Recomendações para evasão
+    timestamp = Column(DateTime, default=datetime.now)
+    
+    # Relacionamento
+    operacao = relationship("HistoricoOperacoes", back_populates="analises")
+
+
+class VulnerabilidadesOcorrencias(Base):
+    """Tabela 5: Ocorrências de vulnerabilidades detectadas"""
+    __tablename__ = 'vulnerabilidades_ocorrencias'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    operacao_id = Column(Integer, ForeignKey('historico_operacoes.id'), nullable=False)
+    
+    # Detalhes da vulnerabilidade
+    criticidade = Column(String(20))  # critica, alta, media, baixa
+    titulo = Column(String(255), nullable=False)
+    descricao = Column(Text)
+    correcao = Column(Text)
+    
+    # Metadados
+    timestamp = Column(DateTime, default=datetime.now)
+    
+    # Relacionamento
+    operacao = relationship("HistoricoOperacoes", back_populates="vulnerabilidades")
+    
+    def to_dict(self):
+        """Converte para dicionário"""
+        return {
+            'id': self.id,
+            'operacao_id': self.operacao_id,
+            'criticidade': self.criticidade,
+            'titulo': self.titulo,
+            'descricao': self.descricao,
+            'correcao': self.correcao,
+            'timestamp': self.timestamp.isoformat() if self.timestamp else None
+        }
+
+
 class AttackHistory(Base):
-    """Modelo para histórico de ataques"""
+    """Modelo legado para compatibilidade - compatibilidade com dados antigos"""
     __tablename__ = 'attack_history'
     
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -224,6 +336,150 @@ class DatabaseManager:
         except Exception as e:
             print(f"[DATABASE] Erro ao calcular estatísticas: {e}")
             return {}
+    
+    def get_alvos_unicos(self) -> list:
+        """Retorna lista de alvos únicos da tabela Alvos"""
+        try:
+            alvos = self.session.query(Alvo.ip_dominio).distinct().all()
+            return [alvo[0] for alvo in alvos if alvo[0]]
+        except Exception as e:
+            print(f"[DATABASE] Erro ao recuperar alvos únicos: {e}")
+            # Fallback para tabela legada
+            try:
+                ips = self.session.query(AttackHistory.target_ip).distinct().all()
+                return [ip[0] for ip in ips if ip[0]]
+            except:
+                return []
+    
+    def get_attack_types_unicos(self) -> list:
+        """Retorna lista de tipos de ataque únicos"""
+        try:
+            tipos = self.session.query(HistoricoOperacoes.attack_type).distinct().all()
+            result = [tipo[0] for tipo in tipos if tipo[0]]
+            if not result:
+                raise Exception("Nenhum tipo encontrado na nova tabela")
+            return result
+        except Exception as e:
+            print(f"[DATABASE] Erro ao recuperar tipos de ataque: {e}")
+            # Fallback para tabela legada
+            try:
+                tipos = self.session.query(AttackHistory.attack_type).distinct().all()
+                return [tipo[0] for tipo in tipos if tipo[0]]
+            except:
+                return []
+    
+    def get_operacoes_por_filtros(self, alvo_ip: str = None, attack_type: str = None, limit: int = 9999) -> list:
+        """Recupera operações com filtros"""
+        try:
+            query = self.session.query(HistoricoOperacoes)
+            
+            if alvo_ip:
+                query = query.join(Alvo).filter(Alvo.ip_dominio == alvo_ip)
+            if attack_type:
+                query = query.filter(HistoricoOperacoes.attack_type == attack_type)
+            
+            operacoes = query.order_by(HistoricoOperacoes.timestamp.desc()).limit(limit).all()
+            
+            return [{
+                'id': op.id,
+                'alvo_ip': op.alvo.ip_dominio if op.alvo else None,
+                'attack_type': op.attack_type,
+                'attack_phase': op.attack_phase,
+                'success': op.success,
+                'timestamp': op.timestamp.isoformat() if op.timestamp else None,
+                'status_fase': op.status_fase,
+                'lesson_learned': op.lesson_learned
+            } for op in operacoes]
+        except Exception as e:
+            print(f"[DATABASE] Erro ao recuperar operações: {e}")
+            return []
+    
+    def get_vulnerabilidades_filtradas(self, alvo_ip: str = None, attack_type: str = None) -> list:
+        """Retorna vulnerabilidades filtradas por alvo e tipo de ataque"""
+        try:
+            query = self.session.query(VulnerabilidadesOcorrencias).join(
+                HistoricoOperacoes, VulnerabilidadesOcorrencias.operacao_id == HistoricoOperacoes.id
+            ).join(
+                Alvo, HistoricoOperacoes.alvo_id == Alvo.id
+            )
+            
+            if alvo_ip:
+                query = query.filter(Alvo.ip_dominio == alvo_ip)
+            if attack_type:
+                query = query.filter(HistoricoOperacoes.attack_type == attack_type)
+            
+            vulns = query.order_by(VulnerabilidadesOcorrencias.timestamp.desc()).all()
+            
+            return [vuln.to_dict() for vuln in vulns]
+        except Exception as e:
+            print(f"[DATABASE] Erro ao recuperar vulnerabilidades: {e}")
+            return []
+    
+    def save_vulnerabilidade(self, operacao_id: int, criticidade: str, titulo: str, descricao: str, correcao: str) -> int:
+        """Salva uma ocorrência de vulnerabilidade"""
+        try:
+            vuln = VulnerabilidadesOcorrencias(
+                operacao_id=operacao_id,
+                criticidade=criticidade,
+                titulo=titulo,
+                descricao=descricao,
+                correcao=correcao
+            )
+            self.session.add(vuln)
+            self.session.commit()
+            
+            print(f"[DATABASE] Vulnerabilidade salva: ID {vuln.id} na operação {operacao_id}")
+            return vuln.id
+        except Exception as e:
+            self.session.rollback()
+            print(f"[DATABASE] Erro ao salvar vulnerabilidade: {e}")
+            raise
+    
+    def save_alvo(self, ip_dominio: str) -> int:
+        """Salva ou recupera um alvo (IP/domínio)"""
+        try:
+            # Verifica se alvo já existe
+            alvo_existente = self.session.query(Alvo).filter(Alvo.ip_dominio == ip_dominio).first()
+            if alvo_existente:
+                return alvo_existente.id
+            
+            # Cria novo alvo
+            alvo = Alvo(ip_dominio=ip_dominio)
+            self.session.add(alvo)
+            self.session.commit()
+            
+            print(f"[DATABASE] Alvo salvo: ID {alvo.id} - {ip_dominio}")
+            return alvo.id
+        except Exception as e:
+            self.session.rollback()
+            print(f"[DATABASE] Erro ao salvar alvo: {e}")
+            raise
+    
+    def save_operacao(self, alvo_id: int, attack_type: str, attack_phase: str, 
+                     payload: str = None, success: bool = False, 
+                     response_code: int = None, response_data: str = None) -> int:
+        """Salva uma nova operação de ataque"""
+        try:
+            operacao = HistoricoOperacoes(
+                alvo_id=alvo_id,
+                attack_type=attack_type,
+                attack_phase=attack_phase,
+                payload=payload,
+                success=success,
+                response_code=response_code,
+                response_data=response_data,
+                status_fase='concluido' if success else 'falhou',
+                timestamp=datetime.now()
+            )
+            self.session.add(operacao)
+            self.session.commit()
+            
+            print(f"[DATABASE] Operação salva: ID {operacao.id} - {attack_type} contra alvo {alvo_id}")
+            return operacao.id
+        except Exception as e:
+            self.session.rollback()
+            print(f"[DATABASE] Erro ao salvar operação: {e}")
+            raise
     
     def close(self):
         """Fecha conexão com banco de dados"""

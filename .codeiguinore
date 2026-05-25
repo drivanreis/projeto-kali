@@ -1,0 +1,10 @@
+# .codeignore
+# Arquivos e diretórios a ignorar para economizar tokens
+archive/
+data/network/
+__pycache__/
+*.log
+*.json
+*.md
+!PROJECT_MAP.md
+!atas-dev/

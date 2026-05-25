@@ -1,0 +1,180 @@
+version: '3.8'
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# KALI-CORE V3.0 - Production Ready Docker Compose Configuration
+# ═══════════════════════════════════════════════════════════════════════════════
+# Arquitetura: 2 serviços (Backend FastAPI + Frontend React/Vite)
+# Network: bridge isolado (kali-network)
+# Volumes: Persistência (SQLite) + Hot-reload (development)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+services:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # BACKEND SERVICE: FastAPI + Python 3.11-slim
+  # Porta: 8001
+  # Healthcheck: GET /api/targets
+  # ─────────────────────────────────────────────────────────────────────────────
+  kali_backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: kali-core-backend
+    hostname: kali-backend
+    
+    # ───────────────────────────────────────────────────────────────────────────
+    # PORTS: Porta 8001 para API FastAPI
+    # ───────────────────────────────────────────────────────────────────────────
+    ports:
+      - "8001:8001"
+    
+    # ───────────────────────────────────────────────────────────────────────────
+    # ENVIRONMENT: Configurações de runtime
+    # ───────────────────────────────────────────────────────────────────────────
+    environment:
+      # Timezone (sincronizar com frontend)
+      TZ: America/Fortaleza
+      
+      # Python configuration (não escrever bytecode)
+      PYTHONUNBUFFERED: 1
+      PYTHONDONTWRITEBYTECODE: 1
+      
+      # Database (SQLite local no volume /app/data)
+      DATABASE_URL: sqlite:////app/data/attack_history.db
+      
+      # Application environment
+      ENVIRONMENT: development
+      DEBUG: "True"
+    
+    # ───────────────────────────────────────────────────────────────────────────
+    # VOLUMES: Código + Data persistence
+    # ───────────────────────────────────────────────────────────────────────────
+    volumes:
+      # Código-fonte do backend (mounted para desenvolvimento/reload)
+      - ./backend:/app
+      
+      # Diretório de data (SQLite database persistence)
+      - ./backend/data:/app/data
+    
+    # ───────────────────────────────────────────────────────────────────────────
+    # NETWORKS: Isolado em kali-network bridge
+    # ───────────────────────────────────────────────────────────────────────────
+    networks:
+      - kali-network
+    
+    # ───────────────────────────────────────────────────────────────────────────
+    # HEALTHCHECK: Valida disponibilidade do backend
+    # Frequency: a cada 30s, timeout 10s, 3 retries
+    # ───────────────────────────────────────────────────────────────────────────
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/api/targets"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    
+    # ───────────────────────────────────────────────────────────────────────────
+    # RESTART: Auto-restart em caso de falha (exceto se parado manualmente)
+    # ───────────────────────────────────────────────────────────────────────────
+    restart: unless-stopped
+    
+    # ───────────────────────────────────────────────────────────────────────────
+    # LOGGING: Configuração de logs
+    # ───────────────────────────────────────────────────────────────────────────
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # FRONTEND SERVICE: Vite + React + TypeScript
+  # Porta: 5190
+  # Hot-reload: Habilitado (volumes de source)
+  # Dependência: kali_backend (service_healthy)
+  # ─────────────────────────────────────────────────────────────────────────────
+  kali_frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: kali-core-frontend
+    hostname: kali-frontend
+    
+    # ───────────────────────────────────────────────────────────────────────────
+    # PORTS: Porta 5190 para Vite dev server
+    # ───────────────────────────────────────────────────────────────────────────
+    ports:
+      - "5190:5190"
+    
+    # ───────────────────────────────────────────────────────────────────────────
+    # ENVIRONMENT: Configurações de runtime
+    # ───────────────────────────────────────────────────────────────────────────
+    environment:
+      # API Configuration (apontar para backend dentro do Docker)
+      VITE_API_URL: http://localhost:8001
+      VITE_API_BASE: /api
+      
+      # Node environment
+      NODE_ENV: development
+      
+      # Timezone (sincronizar com backend)
+      TZ: America/Fortaleza
+    
+    # ───────────────────────────────────────────────────────────────────────────
+    # VOLUMES: Source code + Hot-reload + Named volume para performance
+    # ───────────────────────────────────────────────────────────────────────────
+    volumes:
+      # Source code (detecta mudanças via Vite)
+      - ./frontend/src:/app/src
+      
+      # Public assets
+      - ./frontend/public:/app/public
+      
+      # Configuration files (sem hot-reload automático, mas mapped)
+      - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.ts:/app/vite.config.ts
+      - ./frontend/tsconfig.json:/app/tsconfig.json
+      - ./frontend/tsconfig.node.json:/app/tsconfig.node.json
+      - ./frontend/tailwind.config.cjs:/app/tailwind.config.cjs
+      - ./frontend/postcss.config.cjs:/app/postcss.config.cjs
+      - ./frontend/.eslintrc.json:/app/.eslintrc.json
+      - ./frontend/package.json:/app/package.json
+      
+      # Anonymous volume para node_modules (melhor performance, evita conflitos)
+      - /app/node_modules
+    
+    # ───────────────────────────────────────────────────────────────────────────
+    # NETWORKS: Isolado em kali-network bridge
+    # ───────────────────────────────────────────────────────────────────────────
+    networks:
+      - kali-network
+    
+    # ───────────────────────────────────────────────────────────────────────────
+    # DEPENDS_ON: Frontend aguarda backend estar healthy
+    # ───────────────────────────────────────────────────────────────────────────
+    depends_on:
+      kali_backend:
+        condition: service_healthy
+    
+    # ───────────────────────────────────────────────────────────────────────────
+    # RESTART: Auto-restart em caso de falha
+    # ───────────────────────────────────────────────────────────────────────────
+    restart: unless-stopped
+    
+    # ───────────────────────────────────────────────────────────────────────────
+    # LOGGING: Configuração de logs
+    # ───────────────────────────────────────────────────────────────────────────
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NETWORKS: Isolamento de rede entre containers
+# ═══════════════════════════════════════════════════════════════════════════════
+networks:
+  kali-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

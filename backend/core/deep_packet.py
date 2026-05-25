@@ -17,7 +17,9 @@ from datetime import datetime
 import socket
 
 class DeepPacketModule:
-    def __init__(self, target="138.122.82.214"):
+    def __init__(self, target):
+        if not target:
+            raise ValueError("Alvo (target) é obrigatório para inicializar DeepPacketModule")
         self.target = target
         self.relatorio_file = "estudo_nos_nat.txt"
         self.ttl_values = []

@@ -28,8 +28,10 @@ from deep_packet import DeepPacketModule
 from arsenal import ArsenalModule
 
 class KaliCoreOrchestrator:
-    def __init__(self):
-        self.target = "138.122.82.214"
+    def __init__(self, target):
+        if not target:
+            raise ValueError("Alvo (target) é obrigatório para inicializar KaliCoreOrchestrator")
+        self.target = target
         self.running = True
         
         # Inicializa módulos

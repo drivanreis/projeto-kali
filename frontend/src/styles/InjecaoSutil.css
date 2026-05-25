@@ -1,0 +1,190 @@
+/*
+ * InjecaoSutil.css - Estilos específicos para o painel de Injeção Sutil
+ * Box de entrada de alvo e seleção de táticas
+ */
+
+.injecao-sutil {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efeito de brilho na borda */
+.injecao-sutil::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00ff00, transparent);
+  animation: border-glow-top 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.injecao-sutil::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00ff00, transparent);
+  animation: border-glow-bottom 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Animações de borda */
+@keyframes border-glow-top {
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: -100%;
+  }
+}
+
+@keyframes border-glow-bottom {
+  0% {
+    right: -100%;
+  }
+  50% {
+    right: 100%;
+  }
+  100% {
+    right: -100%;
+  }
+}
+
+/* Title styling */
+.injecao-sutil-title {
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Input styling */
+.injecao-input {
+  width: 100%;
+  background-color: #000;
+  border: 1px solid #00aa00;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.injecao-input:focus {
+  outline: none;
+  border-color: #00ff00;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.injecao-input::placeholder {
+  color: #00aa00;
+}
+
+/* Label styling */
+.injecao-label {
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Checkboxes grid */
+.injecao-checkboxes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.injecao-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.injecao-checkbox-label:hover {
+  color: #00ffaa;
+}
+
+.injecao-checkbox-label input[type='checkbox'] {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  accent-color: #00ff00;
+}
+
+.injecao-checkbox-label input[type='checkbox']:checked {
+  accent-color: #00aa00;
+  filter: drop-shadow(0 0 3px rgba(0, 255, 0, 0.5));
+}
+
+/* Button styling */
+.injecao-button {
+  width: 100%;
+  background-color: #004400;
+  border: 1px solid #00aa00;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.injecao-button:hover:not(:disabled) {
+  background-color: #00aa00;
+  color: #000;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+.injecao-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.injecao-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #333;
+  border-color: #666;
+  color: #999;
+}
+
+/* Processing state */
+.injecao-button.processing {
+  background-color: #005500;
+  box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.2);
+  animation: pulse-processing 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-processing {
+  0%, 100% {
+    box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.2);
+  }
+  50% {
+    box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.4);
+  }
+}

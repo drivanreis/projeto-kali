@@ -14,7 +14,9 @@ from datetime import datetime
 import os
 
 class ReconModule:
-    def __init__(self, target="138.122.82.214"):
+    def __init__(self, target):
+        if not target:
+            raise ValueError("Alvo (target) é obrigatório para inicializar ReconModule")
         self.target = target
         self.running = False
         self.status = {
