@@ -228,7 +228,7 @@ echo -e "${YELLOW}[BONUS] Executando testes unitários (pytest)...${NC}"
 
 echo -n "   ⏳ pytest backend... "
 
-if docker compose exec -T backend python -m pytest 2>/dev/null; then
+if docker exec kali-core-backend python -m pytest -q 2>/dev/null; then
     echo -e "${GREEN}✓ Testes passaram${NC}"
     ((TESTS_PASSED++))
 else
@@ -275,7 +275,7 @@ if [ $TESTS_FAILED -eq 0 ]; then
         fi
 
         echo "   ⏳ Cobertura backend (pytest)..."
-        docker compose exec -T backend python -m pytest --cov=core --cov-report=term
+        docker exec kali-core-backend python -m pytest --cov=core --cov-report=term
 
         echo ""
         echo -e "${GREEN}✅ Cobertura concluída${NC}"
