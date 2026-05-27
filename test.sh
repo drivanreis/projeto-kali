@@ -95,6 +95,9 @@ test_container() {
 echo ""
 echo -e "${YELLOW}[1/5] Verificando ferramentas necessárias...${NC}"
 
+# Desativa temporariamente para checagem de ferramentas
+set +e
+
 echo -n "   ⏳ Docker... "
 if command -v docker &> /dev/null; then
     echo -e "${GREEN}✓ Instalado${NC}"
@@ -130,6 +133,9 @@ else
     echo -e "${RED}✗ Não instalado${NC}"
     ((TESTS_FAILED++))
 fi
+
+# Reativa o modo estrito para o resto do script
+set -e
 
 # ===========================================================================
 # TESTE 2: ESTRUTURA DE ARQUIVOS
