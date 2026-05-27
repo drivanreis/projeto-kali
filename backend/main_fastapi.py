@@ -28,7 +28,8 @@ from recon import ReconModule
 from monitor import MonitorModule
 from deep_packet import DeepPacketModule
 from arsenal import ArsenalModule
-from models import DatabaseManager
+from models import DatabaseManager, AttackHistory
+from engine import EngineInferencia
 
 # Inicializa FastAPI
 app = FastAPI(title="KALI-CORE API", version="1.0.0")
@@ -47,6 +48,9 @@ orchestrator = None
 
 # Instância do Gerenciador de Banco de Dados
 db_manager = DatabaseManager()
+
+# Instância do Motor de Inferência e Reação (Blue Team)
+engine = EngineInferencia(db_manager)
 
 # Dicionário de Mitigações para Vulnerabilidades
 MITIGACOES = {
@@ -729,11 +733,38 @@ async def iniciar_operacao(request: dict):
 
 @app.post("/api/attack-history")
 async def save_attack(attack_data: AttackData):
-    """Salva um registro de ataque no banco de dados"""
+    """
+    Salva um registro de ataque no banco de dados
+    E DISPARA automaticamente a resposta do Time Azul (Blue Team)
+    """
     try:
         attack_dict = attack_data.dict()
         attack_id = db_manager.save_attack(attack_dict)
-        return {"sucesso": True, "attack_id": attack_id, "mensagem": "Ataque salvo com sucesso"}
+        
+        # === MOTOR DE INFERÊNCIA: GERA RESPOSTA AUTOMÁTICA ===
+        # Após registrar o ataque, o sistema reage automaticamente
+        target_ip = attack_dict.get("target_ip")
+        attack_type = attack_dict.get("attack_type", "unknown")
+        
+        if target_ip and attack_type:
+            # Processa ataque e gera resposta automática
+            resposta_automatica = engine.processar_ataque_e_reagir(target_ip, attack_type)
+            
+            return {
+                "sucesso": True,
+                "attack_id": attack_id,
+                "mensagem": "Ataque salvo com sucesso",
+                "blue_team_reaction": {
+                    "status": "REAÇÃO AUTOMÁTICA ACIONADA",
+                    "nivel_alerta": resposta_automatica.get("nivel_alerta"),
+                    "resposta_id": resposta_automatica.get("attack_id_salvo"),
+                    "tipo_resposta": resposta_automatica.get("resposta", {}).get("tipo_resposta"),
+                    "acoes_executadas": resposta_automatica.get("resposta", {}).get("acoes", [])
+                }
+            }
+        else:
+            return {"sucesso": True, "attack_id": attack_id, "mensagem": "Ataque salvo com sucesso"}
+            
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao salvar ataque: {str(e)}")
 
@@ -973,6 +1004,180 @@ async def gerar_laudo(target_ip: str = None, attack_type: str = None, itens: str
         return HTMLResponse(content=html, status_code=200)
     except Exception as e:
         return HTMLResponse(content=f"<h1>Erro ao gerar laudo</h1><p>{str(e)}</p>", status_code=500)
+
+# ==================== ENDPOINTS DO MOTOR DE INFERÊNCIA ====================
+
+@app.post("/api/engine/reacao")
+async def disparar_reacao_manual(target_ip: str, attack_type: str):
+    """
+    Dispara manualmente uma reação do Time Azul (Blue Team)
+    contra um ataque específico para um alvo
+    
+    Args:
+        target_ip: IP do alvo
+        attack_type: Tipo de ataque recebido (nikto, gobuster, dnsrecon, etc)
+    
+    Returns:
+        Resposta agressiva gerada pelo motor com detalhes das ações
+    """
+    try:
+        if not target_ip or not attack_type:
+            raise HTTPException(
+                status_code=400,
+                detail="target_ip e attack_type são obrigatórios"
+            )
+        
+        # Processa ataque e gera resposta automática
+        resposta = engine.processar_ataque_e_reagir(target_ip, attack_type)
+        
+        if resposta.get("sucesso"):
+            return {
+                "sucesso": True,
+                "mensagem": "Reação automática do Time Azul acionada com sucesso",
+                "alvo": target_ip,
+                "tipo_teste": attack_type,
+                "nivel_alerta": resposta.get("nivel_alerta"),
+                "timestamp": resposta.get("timestamp"),
+                "resposta_gerada": resposta.get("resposta"),
+                "attack_id_salvo": resposta.get("attack_id_salvo")
+            }
+        else:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Erro ao processar reação: {resposta.get('erro')}"
+            )
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao disparar reação: {str(e)}")
+
+@app.get("/api/engine/status/{target_ip}")
+async def obter_status_alerta(target_ip: str):
+    """
+    Obtém o nível de alerta atual do Time Azul para um alvo específico
+    baseado no histórico de ataques
+    
+    Args:
+        target_ip: IP do alvo para consulta
+    
+    Returns:
+        Status de alerta, estatísticas de ataques e recomendações
+    """
+    try:
+        if not target_ip:
+            raise HTTPException(status_code=400, detail="target_ip é obrigatório")
+        
+        # Calcula nível de alerta
+        nivel_alerta = engine.calcular_nivel_alerta(target_ip)
+        
+        # Recupera histórico de ataques para o alvo
+        history = db_manager.session.query(AttackHistory).filter(
+            AttackHistory.target_ip == target_ip
+        ).order_by(AttackHistory.timestamp.desc()).limit(20).all()
+        
+        ataques_recentes = [
+            {
+                "id": h.id,
+                "timestamp": h.timestamp.isoformat() if h.timestamp else None,
+                "attack_type": h.attack_type,
+                "success": h.success,
+                "confidence": h.confidence_score
+            }
+            for h in history
+        ]
+        
+        # Calcula estatísticas
+        total_ataques = len(history)
+        ataques_sucesso = sum(1 for h in history if h.success)
+        taxa_sucesso = ataques_sucesso / total_ataques if total_ataques > 0 else 0
+        
+        # Define ação recomendada baseada no nível de alerta
+        acoes_recomendadas = {
+            "VERDE": ["Monitoramento padrão", "Logs regulares"],
+            "AMARELO": ["Aumentar frequência de logs", "Investigação de anomalias"],
+            "LARANJA": ["Análise forense", "Isolamento preparado", "Notificar SOC"],
+            "VERMELHO": ["Isolamento imediato", "Captura de tráfego", "Incidente confirmado"],
+            "CRÍTICO": ["Desligamento do sistema", "Análise forense completa", "Investigação jurídica"]
+        }
+        
+        return {
+            "sucesso": True,
+            "alvo": target_ip,
+            "nivel_alerta": nivel_alerta,
+            "nivel_numerico": engine.niveis_alerta.get(nivel_alerta, -1),
+            "total_ataques_recentes": total_ataques,
+            "ataques_bem_sucedidos": ataques_sucesso,
+            "taxa_sucesso": f"{taxa_sucesso * 100:.1f}%",
+            "ataques_historio": ataques_recentes,
+            "acoes_recomendadas": acoes_recomendadas.get(nivel_alerta, ["Monitoramento padrão"]),
+            "timestamp": datetime.now().isoformat()
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro ao obter status de alerta: {str(e)}"
+        )
+
+@app.get("/api/engine/historico-reacoes/{target_ip}")
+async def obter_historico_reacoes(target_ip: str, limit: int = 50):
+    """
+    Recupera histórico de reações automáticas geradas pelo Time Azul
+    contra um alvo específico
+    
+    Args:
+        target_ip: IP do alvo
+        limit: Número máximo de registros a retornar
+    
+    Returns:
+        Lista de contra-ataques/reações realizadas
+    """
+    try:
+        if not target_ip:
+            raise HTTPException(status_code=400, detail="target_ip é obrigatório")
+        
+        # Consulta histórico de contra-ataques (target_service contém BLUE_TEAM_RESPONSE)
+        reacoes = db_manager.session.query(AttackHistory).filter(
+            AttackHistory.target_ip == target_ip,
+            AttackHistory.target_service.like("%BLUE_TEAM_RESPONSE%")
+        ).order_by(AttackHistory.timestamp.desc()).limit(limit).all()
+        
+        reacoes_formatadas = []
+        for r in reacoes:
+            try:
+                response_data = json.loads(r.response_data) if r.response_data else {}
+                payload_data = json.loads(r.payload) if r.payload else {}
+                
+                reacoes_formatadas.append({
+                    "id": r.id,
+                    "timestamp": r.timestamp.isoformat() if r.timestamp else None,
+                    "tipo_ataque_recebido": r.attack_type.replace("COUNTER_ATTACK_", ""),
+                    "tipo_reacao": r.target_service.replace("BLUE_TEAM_RESPONSE_", ""),
+                    "nivel_alerta": response_data.get("nivel_alerta", "DESCONHECIDO"),
+                    "acoes_executadas": response_data.get("acoes_executadas", []),
+                    "duration_ms": r.duration_ms
+                })
+            except:
+                pass
+        
+        return {
+            "sucesso": True,
+            "alvo": target_ip,
+            "total_reacoes": len(reacoes_formatadas),
+            "reacoes": reacoes_formatadas,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro ao recuperar histórico de reações: {str(e)}"
+        )
 
 # ==================== INICIALIZAÇÃO ====================
 

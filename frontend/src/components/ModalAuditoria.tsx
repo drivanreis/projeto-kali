@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useApp } from "@/context/AppContext";
 import { CardVulnerabilidade } from "./CardVulnerabilidade";
+import { ComboBoxAlvo } from "./ComboBoxAlvo";
 
 interface ModalAuditoriaProps {
   isOpen: boolean;
@@ -80,22 +81,12 @@ export const ModalAuditoria: React.FC<ModalAuditoriaProps> = ({
 
           {/* Filtros */}
           <div className="grid grid-cols-2 gap-3 mb-3">
-            <div>
-              <label className="text-green-400 font-mono text-xs block mb-1">IP / DOMÍNIO:</label>
-              <select
-                id="filtro-ip"
-                value={filtroAlvo}
-                onChange={(e) => setFiltroAlvo(e.target.value)}
-                className="w-full bg-black border border-green-500 text-green-400 font-mono text-xs p-2 focus:outline-none"
-              >
-                <option value="">-- TODOS --</option>
-                {alvos.map((alvo) => (
-                  <option key={alvo} value={alvo}>
-                    {alvo}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <ComboBoxAlvo
+              alvos={alvos}
+              valor={filtroAlvo}
+              onChange={setFiltroAlvo}
+              label="IP / DOMÍNIO:"
+            />
             <div>
               <label className="text-green-400 font-mono text-xs block mb-1">TIPO DE ATAQUE:</label>
               <select
