@@ -64,7 +64,7 @@
 
 .modal-header-title h2 {
   color: #00ff00;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-weight: bold;
   font-size: 1rem;
   margin: 0;
@@ -101,7 +101,7 @@
 
 .modal-filter-label {
   color: #00ff00;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.75rem;
   margin-bottom: 0.25rem;
   text-transform: uppercase;
@@ -112,7 +112,7 @@
   background-color: #000;
   border: 1px solid #00aa00;
   color: #00ff00;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.75rem;
   padding: 0.5rem;
   cursor: pointer;
@@ -133,7 +133,7 @@
 /* Stats styling */
 .modal-stats {
   color: #999;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.75rem;
   padding: 0.25rem 0;
 }
@@ -172,7 +172,7 @@
   min-height: 200px;
   color: #666;
   text-align: center;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.875rem;
 }
 
@@ -191,7 +191,7 @@
   background-color: #004400;
   border: 1px solid #00aa00;
   color: #00ff00;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.75rem;
   font-weight: bold;
   padding: 0.75rem;

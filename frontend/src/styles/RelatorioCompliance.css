@@ -21,18 +21,18 @@
   font-weight: bold;
   margin: 0 0 0.5rem 0;
   color: #000;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
 }
 
 .relatorio-header h2 {
   font-size: 1.25rem;
   color: #666;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   margin: 0 0 1rem 0;
 }
 
 .relatorio-meta {
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.875rem;
   color: #666;
   space: 0.5rem 0;
@@ -61,7 +61,7 @@
   font-weight: bold;
   margin: 0 0 0.5rem 0;
   color: #000;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -80,7 +80,7 @@
   padding: 0.25rem 0.75rem;
   border-radius: 3px;
   margin-bottom: 1rem;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   text-transform: uppercase;
 }
 
@@ -112,7 +112,7 @@
 .relatorio-pillar-title {
   font-weight: bold;
   color: #000;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   text-transform: uppercase;
   font-size: 0.95rem;
   margin-bottom: 0.5rem;
@@ -129,7 +129,7 @@
 
 .relatorio-pillar-content {
   color: #333;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.9rem;
   line-height: 1.6;
   margin-left: 1.5rem;
@@ -197,7 +197,7 @@
   margin-top: 3rem;
   padding-top: 2rem;
   border-top: 1px solid #ccc;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.8rem;
   color: #999;
   text-align: center;
@@ -228,7 +228,7 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.875rem;
   font-weight: bold;
   text-transform: uppercase;

@@ -48,7 +48,7 @@
   font-size: 1.5rem;
   font-weight: bold;
   color: #00ff00;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   margin: 0;
 }
 
@@ -65,11 +65,11 @@
   font-weight: bold;
   font-size: 0.875rem;
   margin-bottom: 0.75rem;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
 }
 
 .status-panel-content {
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.75rem;
   line-height: 1.8;
 }

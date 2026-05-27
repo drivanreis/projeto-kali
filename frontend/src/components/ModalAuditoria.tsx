@@ -1,11 +1,11 @@
-import React, { useState, useMemo } from 'react'
-import { useApp } from '@/context/AppContext'
-import { CardVulnerabilidade } from './CardVulnerabilidade'
+import React, { useState, useMemo } from "react";
+import { useApp } from "@/context/AppContext";
+import { CardVulnerabilidade } from "./CardVulnerabilidade";
 
 interface ModalAuditoriaProps {
-  isOpen: boolean
-  onClose: () => void
-  onGerarLaudo: (vulnIds: number[]) => void
+  isOpen: boolean;
+  onClose: () => void;
+  onGerarLaudo: (vulnIds: number[]) => void;
 }
 
 export const ModalAuditoria: React.FC<ModalAuditoriaProps> = ({
@@ -22,44 +22,44 @@ export const ModalAuditoria: React.FC<ModalAuditoriaProps> = ({
     setFiltroAlvo,
     setFiltroAtaque,
     carregarFiltros,
-  } = useApp()
-  const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set())
+  } = useApp();
+  const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set());
 
   const vulnerabilidadesFiltradas = useMemo(() => {
     return vulnerabilidades.filter((v) => {
-      const matchAlvo = !filtroAlvo || v.alvo_ip === filtroAlvo
-      const matchAtaque = !filtroAtaque || v.attack_type === filtroAtaque
-      return matchAlvo && matchAtaque
-    })
-  }, [vulnerabilidades, filtroAlvo, filtroAtaque])
+      const matchAlvo = !filtroAlvo || v.alvo_ip === filtroAlvo;
+      const matchAtaque = !filtroAtaque || v.attack_type === filtroAtaque;
+      return matchAlvo && matchAtaque;
+    });
+  }, [vulnerabilidades, filtroAlvo, filtroAtaque]);
 
   const handleSelectVuln = (id: number): void => {
     setSelecionadas((prev) => {
-      const novo = new Set(prev)
+      const novo = new Set(prev);
       if (novo.has(id)) {
-        novo.delete(id)
+        novo.delete(id);
       } else {
-        novo.add(id)
+        novo.add(id);
       }
-      return novo
-    })
-  }
+      return novo;
+    });
+  };
 
   const handleGerarLaudo = (): void => {
     if (selecionadas.size === 0) {
-      alert('Por favor, selecione pelo menos uma vulnerabilidade')
-      return
+      alert("Por favor, selecione pelo menos uma vulnerabilidade");
+      return;
     }
-    onGerarLaudo(Array.from(selecionadas))
-  }
+    onGerarLaudo(Array.from(selecionadas));
+  };
 
   React.useEffect(() => {
     if (isOpen) {
-      void carregarFiltros()
+      void carregarFiltros();
     }
-  }, [isOpen, carregarFiltros])
+  }, [isOpen, carregarFiltros]);
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
@@ -81,9 +81,7 @@ export const ModalAuditoria: React.FC<ModalAuditoriaProps> = ({
           {/* Filtros */}
           <div className="grid grid-cols-2 gap-3 mb-3">
             <div>
-              <label className="text-green-400 font-mono text-xs block mb-1">
-                IP / DOMÍNIO:
-              </label>
+              <label className="text-green-400 font-mono text-xs block mb-1">IP / DOMÍNIO:</label>
               <select
                 id="filtro-ip"
                 value={filtroAlvo}
@@ -99,9 +97,7 @@ export const ModalAuditoria: React.FC<ModalAuditoriaProps> = ({
               </select>
             </div>
             <div>
-              <label className="text-green-400 font-mono text-xs block mb-1">
-                TIPO DE ATAQUE:
-              </label>
+              <label className="text-green-400 font-mono text-xs block mb-1">TIPO DE ATAQUE:</label>
               <select
                 id="filtro-ataque"
                 value={filtroAtaque}
@@ -119,8 +115,7 @@ export const ModalAuditoria: React.FC<ModalAuditoriaProps> = ({
           </div>
 
           <div className="text-gray-400 font-mono text-xs">
-            Total: {vulnerabilidadesFiltradas.length} | Selecionadas:{' '}
-            {selecionadas.size}
+            Total: {vulnerabilidadesFiltradas.length} | Selecionadas: {selecionadas.size}
           </div>
         </div>
 
@@ -159,5 +154,5 @@ export const ModalAuditoria: React.FC<ModalAuditoriaProps> = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

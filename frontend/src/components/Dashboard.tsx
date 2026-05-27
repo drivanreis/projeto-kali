@@ -1,24 +1,22 @@
-import React, { useState } from 'react'
-import { InjecaoSutil } from './InjecaoSutil'
-import { ModalAuditoria } from './ModalAuditoria'
-import { RelatorioCompliance } from './RelatorioCompliance'
-import { useApp } from '@/context/AppContext'
+import React, { useState } from "react";
+import { InjecaoSutil } from "./InjecaoSutil";
+import { ModalAuditoria } from "./ModalAuditoria";
+import { RelatorioCompliance } from "./RelatorioCompliance";
+import { useApp } from "@/context/AppContext";
 
 export const Dashboard: React.FC = () => {
-  const { vulnerabilidades } = useApp()
-  const [modalAberto, setModalAberto] = useState(false)
-  const [relatorioAberto, setRelatorioAberto] = useState(false)
-  const [vulnParaRelatorio, setVulnParaRelatorio] = useState<number[]>([])
+  const { vulnerabilidades } = useApp();
+  const [modalAberto, setModalAberto] = useState(false);
+  const [relatorioAberto, setRelatorioAberto] = useState(false);
+  const [vulnParaRelatorio, setVulnParaRelatorio] = useState<number[]>([]);
 
   const handleGerarLaudo = (vulnIds: number[]): void => {
-    setVulnParaRelatorio(vulnIds)
-    setRelatorioAberto(true)
-    setModalAberto(false)
-  }
+    setVulnParaRelatorio(vulnIds);
+    setRelatorioAberto(true);
+    setModalAberto(false);
+  };
 
-  const vulnSelecionadas = vulnerabilidades.filter((v) =>
-    vulnParaRelatorio.includes(v.id)
-  )
+  const vulnSelecionadas = vulnerabilidades.filter((v) => vulnParaRelatorio.includes(v.id));
 
   return (
     <div className="min-h-screen bg-black p-4 font-mono">
@@ -35,22 +33,19 @@ export const Dashboard: React.FC = () => {
         <div className="col-span-12 md:col-span-6">
           <InjecaoSutil
             onOperacaoIniciada={() => {
-              setModalAberto(true)
+              setModalAberto(true);
             }}
           />
 
           {/* Painel de Status */}
           <div className="border border-green-500 p-4 mb-6 bg-black">
-            <div className="text-green-400 font-bold mb-3 text-sm">
-              [ STATUS DO SISTEMA ]
-            </div>
+            <div className="text-green-400 font-bold mb-3 text-sm">[ STATUS DO SISTEMA ]</div>
             <div className="text-green-400 font-mono text-xs space-y-2">
               <div>
-                Total de Vulnerabilidades: <span className="text-yellow-400">{vulnerabilidades.length}</span>
+                Total de Vulnerabilidades:{" "}
+                <span className="text-yellow-400">{vulnerabilidades.length}</span>
               </div>
-              <div className="text-gray-500 text-xs mt-2">
-                Sistema aguardando operações...
-              </div>
+              <div className="text-gray-500 text-xs mt-2">Sistema aguardando operações...</div>
             </div>
           </div>
 
@@ -65,11 +60,11 @@ export const Dashboard: React.FC = () => {
             <button
               onClick={() => {
                 if (vulnerabilidades.length === 0) {
-                  alert('Nenhuma vulnerabilidade para gerar relatório')
-                  return
+                  alert("Nenhuma vulnerabilidade para gerar relatório");
+                  return;
                 }
-                setVulnParaRelatorio(vulnerabilidades.map((v) => v.id))
-                setRelatorioAberto(true)
+                setVulnParaRelatorio(vulnerabilidades.map((v) => v.id));
+                setRelatorioAberto(true);
               }}
               className="bg-blue-900 hover:bg-blue-700 text-blue-400 font-mono text-xs py-2 px-3 border border-blue-500 transition-colors"
             >
@@ -81,9 +76,7 @@ export const Dashboard: React.FC = () => {
         {/* Coluna direita - Informações */}
         <div className="col-span-12 md:col-span-6">
           <div className="border border-green-500 p-4 bg-black">
-            <div className="text-green-400 font-bold mb-3 text-sm">
-              [ INFORMAÇÕES DO SISTEMA ]
-            </div>
+            <div className="text-green-400 font-bold mb-3 text-sm">[ INFORMAÇÕES DO SISTEMA ]</div>
             <div className="text-gray-400 font-mono text-xs space-y-2">
               <div>
                 <span className="text-green-400">Versão:</span> 3.0 (Vite + React + TypeScript)
@@ -124,11 +117,11 @@ export const Dashboard: React.FC = () => {
         <RelatorioCompliance
           vulnerabilidades={vulnSelecionadas}
           onFechar={() => {
-            setRelatorioAberto(false)
-            setVulnParaRelatorio([])
+            setRelatorioAberto(false);
+            setVulnParaRelatorio([]);
           }}
         />
       )}
     </div>
-  )
-}
+  );
+};

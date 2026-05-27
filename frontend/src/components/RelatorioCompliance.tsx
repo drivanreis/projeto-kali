@@ -1,97 +1,97 @@
-import React from 'react'
-import { Vulnerabilidade, RelatorioItem } from '@/types'
+import React from "react";
+import { Vulnerabilidade, RelatorioItem } from "@/types";
 
 interface RelatorioComplianceProps {
-  vulnerabilidades: Vulnerabilidade[]
-  onFechar: () => void
+  vulnerabilidades: Vulnerabilidade[];
+  onFechar: () => void;
 }
 
 const traduzirVulnerabilidade = (vuln: Vulnerabilidade): RelatorioItem => {
   const traducoes: Record<string, RelatorioItem> = {
-    'Injeção SQL': {
+    "Injeção SQL": {
       vulnerabilidade: vuln,
       impactoFinanceiro:
-        'Acesso não autorizado a banco de dados com vazamento de dados de clientes, resultando em multas LGPD (até 2% do faturamento anual), perda de confiança e custo de notificação aos afetados.',
-      gravidadeExecutiva: 'RISCO CRÍTICO PARA CONTINUIDADE DO NEGÓCIO',
+        "Acesso não autorizado a banco de dados com vazamento de dados de clientes, resultando em multas LGPD (até 2% do faturamento anual), perda de confiança e custo de notificação aos afetados.",
+      gravidadeExecutiva: "RISCO CRÍTICO PARA CONTINUIDADE DO NEGÓCIO",
       planoMitigacao:
-        'Implementar validação de entrada, usar prepared statements, atualizar frameworks web, realizar testes de penetração trimestrais.',
-      custoEstimado: 'Alto',
+        "Implementar validação de entrada, usar prepared statements, atualizar frameworks web, realizar testes de penetração trimestrais.",
+      custoEstimado: "Alto",
     },
-    'Cross-Site Scripting (XSS)': {
+    "Cross-Site Scripting (XSS)": {
       vulnerabilidade: vuln,
       impactoFinanceiro:
-        'Furto de sessões de usuários, redirecionamento para phishing, malware distribuído via plataforma. Custo de remediação + perda de reputação.',
-      gravidadeExecutiva: 'RISCO ALTO PARA A MARCA',
+        "Furto de sessões de usuários, redirecionamento para phishing, malware distribuído via plataforma. Custo de remediação + perda de reputação.",
+      gravidadeExecutiva: "RISCO ALTO PARA A MARCA",
       planoMitigacao:
-        'Sanitizar todas as entradas do usuário, implementar CSP headers, atualizar dependências front-end, realizar code reviews de segurança.',
-      custoEstimado: 'Médio',
+        "Sanitizar todas as entradas do usuário, implementar CSP headers, atualizar dependências front-end, realizar code reviews de segurança.",
+      custoEstimado: "Médio",
     },
-    'Autenticação Fraca': {
+    "Autenticação Fraca": {
       vulnerabilidade: vuln,
       impactoFinanceiro:
-        'Comprometimento de contas de usuários administrativos, acesso indevido a dados sensíveis, fraude interna e externa.',
-      gravidadeExecutiva: 'RISCO CRÍTICO PARA COMPLIANCE',
+        "Comprometimento de contas de usuários administrativos, acesso indevido a dados sensíveis, fraude interna e externa.",
+      gravidadeExecutiva: "RISCO CRÍTICO PARA COMPLIANCE",
       planoMitigacao:
-        'Implementar MFA em todos os acessos, usar JWT/OAuth2, implementar rate limiting, logs de auditoria contínuos.',
-      custoEstimado: 'Médio',
+        "Implementar MFA em todos os acessos, usar JWT/OAuth2, implementar rate limiting, logs de auditoria contínuos.",
+      custoEstimado: "Médio",
     },
-    'Certificado SSL Inválido': {
+    "Certificado SSL Inválido": {
       vulnerabilidade: vuln,
       impactoFinanceiro:
-        'Interceptação de comunicação, roubo de credenciais em trânsito, exposição a ataques man-in-the-middle.',
-      gravidadeExecutiva: 'RISCO CRÍTICO PARA SEGURANÇA EM TRÂNSITO',
+        "Interceptação de comunicação, roubo de credenciais em trânsito, exposição a ataques man-in-the-middle.",
+      gravidadeExecutiva: "RISCO CRÍTICO PARA SEGURANÇA EM TRÂNSITO",
       planoMitigacao:
-        'Renovar certificados SSL/TLS, implementar certificate pinning, monitorar validade com alertas automáticos.',
-      custoEstimado: 'Baixo',
+        "Renovar certificados SSL/TLS, implementar certificate pinning, monitorar validade com alertas automáticos.",
+      custoEstimado: "Baixo",
     },
-    'Porta Aberta Desnecessária': {
+    "Porta Aberta Desnecessária": {
       vulnerabilidade: vuln,
       impactoFinanceiro:
-        'Superfície de ataque expandida, acesso potencial a serviços internos, descoberta de versões de software.',
-      gravidadeExecutiva: 'RISCO MÉDIO PARA SUPERFÍCIE DE ATAQUE',
+        "Superfície de ataque expandida, acesso potencial a serviços internos, descoberta de versões de software.",
+      gravidadeExecutiva: "RISCO MÉDIO PARA SUPERFÍCIE DE ATAQUE",
       planoMitigacao:
-        'Auditar portas abertas, implementar firewall com whitelist, usar VPN para acesso administrativo.',
-      custoEstimado: 'Baixo',
+        "Auditar portas abertas, implementar firewall com whitelist, usar VPN para acesso administrativo.",
+      custoEstimado: "Baixo",
     },
-    'Configuração Insegura': {
+    "Configuração Insegura": {
       vulnerabilidade: vuln,
       impactoFinanceiro:
-        'Acesso indevido a funcionalidades administrativas, exposição de chaves API, vazamento de segredos de aplicação.',
-      gravidadeExecutiva: 'RISCO ALTO PARA INTEGRIDADE DO SISTEMA',
+        "Acesso indevido a funcionalidades administrativas, exposição de chaves API, vazamento de segredos de aplicação.",
+      gravidadeExecutiva: "RISCO ALTO PARA INTEGRIDADE DO SISTEMA",
       planoMitigacao:
-        'Revisar configurações de segurança, usar gerenciador de segredos, implementar hardening de SO/aplicação.',
-      custoEstimado: 'Médio',
+        "Revisar configurações de segurança, usar gerenciador de segredos, implementar hardening de SO/aplicação.",
+      custoEstimado: "Médio",
     },
-  }
+  };
 
   return (
     traducoes[vuln.titulo] || {
       vulnerabilidade: vuln,
       impactoFinanceiro:
-        'Exposição de negócio a riscos operacionais, financeiros e legais não documentados.',
-      gravidadeExecutiva: 'RISCO NÃO CATALOGADO - REVISAR IMEDIATAMENTE',
-      planoMitigacao: 'Consultar especialista de segurança para avaliação de risco completa.',
-      custoEstimado: 'Alto',
+        "Exposição de negócio a riscos operacionais, financeiros e legais não documentados.",
+      gravidadeExecutiva: "RISCO NÃO CATALOGADO - REVISAR IMEDIATAMENTE",
+      planoMitigacao: "Consultar especialista de segurança para avaliação de risco completa.",
+      custoEstimado: "Alto",
     }
-  )
-}
+  );
+};
 
 export const RelatorioCompliance: React.FC<RelatorioComplianceProps> = ({
   vulnerabilidades,
   onFechar,
 }) => {
-  const relatorios = vulnerabilidades.map(traduzirVulnerabilidade)
-  const datahora = new Date().toLocaleString('pt-BR')
+  const relatorios = vulnerabilidades.map(traduzirVulnerabilidade);
+  const datahora = new Date().toLocaleString("pt-BR");
 
   const handleImprimir = (): void => {
-    window.print()
-  }
+    window.print();
+  };
 
   const handleBaixarHTML = (): void => {
-    const html = document.querySelector('.relatorio-compliance-container')
-    if (!html) return
+    const html = document.querySelector(".relatorio-compliance-container");
+    if (!html) return;
 
-    const conteudo = html.innerHTML
+    const conteudo = html.innerHTML;
     const blob = new Blob(
       [
         `<!DOCTYPE html>
@@ -125,16 +125,16 @@ ${conteudo}
 </body>
 </html>`,
       ],
-      { type: 'text/html' }
-    )
+      { type: "text/html" }
+    );
 
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `relatorio-compliance-${new Date().getTime()}.html`
-    a.click()
-    URL.revokeObjectURL(url)
-  }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `relatorio-compliance-${new Date().getTime()}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="fixed inset-0 bg-white z-40 overflow-auto">
@@ -144,16 +144,13 @@ ${conteudo}
           <h1 className="text-3xl font-bold mb-2 font-mono">
             RELATÓRIO DE VULNERABILIDADES E COMPLIANCE
           </h1>
-          <h2 className="text-lg text-gray-600 font-mono mb-4">
-            Sistema KALI-CORE V3.0
-          </h2>
+          <h2 className="text-lg text-gray-600 font-mono mb-4">Sistema KALI-CORE V3.0</h2>
           <div className="text-sm text-gray-500 space-y-1 font-mono">
             <p>
               <strong>Data/Hora:</strong> {datahora}
             </p>
             <p>
-              <strong>Total de Vulnerabilidades Analisadas:</strong>{' '}
-              {vulnerabilidades.length}
+              <strong>Total de Vulnerabilidades Analisadas:</strong> {vulnerabilidades.length}
             </p>
           </div>
         </div>
@@ -162,17 +159,15 @@ ${conteudo}
         <div className="space-y-8">
           {relatorios.map((relatorio, idx) => {
             const criticidadeClass = {
-              critica: 'critical',
-              alta: 'high',
-              media: 'medium',
-              baixa: 'low',
-            }[relatorio.vulnerabilidade.criticidade]
+              critica: "critical",
+              alta: "high",
+              media: "medium",
+              baixa: "low",
+            }[relatorio.vulnerabilidade.criticidade];
 
             return (
               <div key={relatorio.vulnerabilidade.id} className="border-2 border-black p-6">
-                <h3
-                  className={`text-xl font-bold mb-1 font-mono ${criticidadeClass}`}
-                >
+                <h3 className={`text-xl font-bold mb-1 font-mono ${criticidadeClass}`}>
                   [{idx + 1}] {relatorio.vulnerabilidade.titulo}
                 </h3>
                 <p className="text-sm text-gray-600 font-mono mb-4">
@@ -184,49 +179,37 @@ ${conteudo}
                     <div className="font-bold text-black mb-1">
                       💰 IMPACTO FINANCEIRO / RISCO DE NEGÓCIO
                     </div>
-                    <div className="ml-4 text-gray-700">
-                      {relatorio.impactoFinanceiro}
-                    </div>
+                    <div className="ml-4 text-gray-700">{relatorio.impactoFinanceiro}</div>
                   </div>
 
                   <div>
-                    <div className="font-bold text-red-600 mb-1">
-                      ⚠️ GRAVIDADE EXECUTIVA
-                    </div>
-                    <div className="ml-4 text-gray-700">
-                      {relatorio.gravidadeExecutiva}
-                    </div>
+                    <div className="font-bold text-red-600 mb-1">⚠️ GRAVIDADE EXECUTIVA</div>
+                    <div className="ml-4 text-gray-700">{relatorio.gravidadeExecutiva}</div>
                   </div>
 
                   <div>
-                    <div className="font-bold text-black mb-1">
-                      🔧 PLANO DE MITIGAÇÃO
-                    </div>
-                    <div className="ml-4 text-gray-700">
-                      {relatorio.planoMitigacao}
-                    </div>
+                    <div className="font-bold text-black mb-1">🔧 PLANO DE MITIGAÇÃO</div>
+                    <div className="ml-4 text-gray-700">{relatorio.planoMitigacao}</div>
                   </div>
 
                   <div>
-                    <div className="font-bold text-black mb-1">
-                      💵 CUSTO ESTIMADO DE CORREÇÃO
-                    </div>
+                    <div className="font-bold text-black mb-1">💵 CUSTO ESTIMADO DE CORREÇÃO</div>
                     <div className="ml-4 text-gray-700">
                       {relatorio.custoEstimado} (Em recursos de TI e horas de trabalho)
                     </div>
                   </div>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
 
         {/* Rodapé */}
         <div className="mt-12 pt-6 border-t-2 border-black">
           <p className="text-xs text-gray-500 font-mono">
-            Este relatório é confidencial e deve ser compartilhado apenas com
-            stakeholders autorizados. A implementação dos planos de mitigação é
-            recomendada com urgência para manter a postura de segurança adequada.
+            Este relatório é confidencial e deve ser compartilhado apenas com stakeholders
+            autorizados. A implementação dos planos de mitigação é recomendada com urgência para
+            manter a postura de segurança adequada.
           </p>
         </div>
       </div>
@@ -253,5 +236,5 @@ ${conteudo}
         </button>
       </div>
     </div>
-  )
-}
+  );
+};

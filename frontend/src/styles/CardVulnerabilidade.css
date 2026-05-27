@@ -65,7 +65,7 @@
 
 /* Título com criticidade */
 .card-title {
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-weight: bold;
   font-size: 0.875rem;
   margin-bottom: 0.25rem;
@@ -113,7 +113,7 @@
 /* Description and correction */
 .card-description {
   color: #999;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.75rem;
   margin-bottom: 0.5rem;
   line-height: 1.5;
@@ -121,7 +121,7 @@
 
 .card-correction {
   color: #00aa00;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.75rem;
   margin-bottom: 0.5rem;
   line-height: 1.4;
@@ -134,7 +134,7 @@
 /* Timestamp */
 .card-timestamp {
   color: #666;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 0.7rem;
   margin-top: 0.5rem;
 }
@@ -147,11 +147,11 @@
 }
 
 .vulnerability-card.selected::before {
-  content: '✓ SELECIONADA';
+  content: "✓ SELECIONADA";
   display: block;
   color: #00ff00;
   font-size: 0.65rem;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-weight: bold;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
@@ -178,7 +178,8 @@
 
 /* Animations for severity levels */
 @keyframes critical-pulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
   }
   50% {

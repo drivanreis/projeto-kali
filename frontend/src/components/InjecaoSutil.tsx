@@ -1,57 +1,51 @@
-import React, { useState } from 'react'
-import { useApp } from '@/context/AppContext'
+import React, { useState } from "react";
+import { useApp } from "@/context/AppContext";
 
 interface InjecaoSutilProps {
-  onOperacaoIniciada: () => void
+  onOperacaoIniciada: () => void;
 }
 
 export const InjecaoSutil: React.FC<InjecaoSutilProps> = ({ onOperacaoIniciada }) => {
-  const { iniciarOperacao, carregando } = useApp()
-  const [alvo, setAlvo] = useState('')
-  const [taticas, setTaticas] = useState<string[]>([])
+  const { iniciarOperacao, carregando } = useApp();
+  const [alvo, setAlvo] = useState("");
+  const [taticas, setTaticas] = useState<string[]>([]);
 
   const taticasDisponiveis = [
-    { id: 'recon', label: 'RECONHECIMENTO' },
-    { id: 'scan', label: 'VARREDURA' },
-    { id: 'exploit', label: 'EXPLORAÇÃO' },
-    { id: 'maint', label: 'MANUTENÇÃO' },
-    { id: 'exfil', label: 'EXFILTRAÇÃO' },
-  ]
+    { id: "recon", label: "RECONHECIMENTO" },
+    { id: "scan", label: "VARREDURA" },
+    { id: "exploit", label: "EXPLORAÇÃO" },
+    { id: "maint", label: "MANUTENÇÃO" },
+    { id: "exfil", label: "EXFILTRAÇÃO" },
+  ];
 
   const handleTaticaChange = (taticaId: string, checked: boolean): void => {
-    setTaticas((prev) =>
-      checked ? [...prev, taticaId] : prev.filter((t) => t !== taticaId)
-    )
-  }
+    setTaticas((prev) => (checked ? [...prev, taticaId] : prev.filter((t) => t !== taticaId)));
+  };
 
   const handleIniciar = async (): Promise<void> => {
     if (!alvo.trim()) {
-      alert('Por favor, informe um alvo (IP ou domínio)')
-      return
+      alert("Por favor, informe um alvo (IP ou domínio)");
+      return;
     }
     if (taticas.length === 0) {
-      alert('Por favor, selecione pelo menos uma tática')
-      return
+      alert("Por favor, selecione pelo menos uma tática");
+      return;
     }
 
-    const resultado = await iniciarOperacao(alvo, taticas)
+    const resultado = await iniciarOperacao(alvo, taticas);
     if (resultado) {
-      setAlvo('')
-      setTaticas([])
-      onOperacaoIniciada()
+      setAlvo("");
+      setTaticas([]);
+      onOperacaoIniciada();
     }
-  }
+  };
 
   return (
     <div className="injecao-sutil border border-green-500 p-4 mb-6 bg-black">
-      <div className="text-green-400 font-mono font-bold mb-3 text-sm">
-        [ INJEÇÃO SUTIL ]
-      </div>
+      <div className="text-green-400 font-mono font-bold mb-3 text-sm">[ INJEÇÃO SUTIL ]</div>
 
       <div className="mb-4">
-        <label className="text-green-400 font-mono text-xs block mb-2">
-          ALVO (IP / DOMÍNIO):
-        </label>
+        <label className="text-green-400 font-mono text-xs block mb-2">ALVO (IP / DOMÍNIO):</label>
         <input
           type="text"
           value={alvo}
@@ -68,10 +62,7 @@ export const InjecaoSutil: React.FC<InjecaoSutilProps> = ({ onOperacaoIniciada }
         </label>
         <div className="grid grid-cols-2 gap-2">
           {taticasDisponiveis.map((tatica) => (
-            <label
-              key={tatica.id}
-              className="flex items-center gap-2 cursor-pointer"
-            >
+            <label key={tatica.id} className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={taticas.includes(tatica.id)}
@@ -79,9 +70,7 @@ export const InjecaoSutil: React.FC<InjecaoSutilProps> = ({ onOperacaoIniciada }
                 className="w-4 h-4 accent-green-500"
                 disabled={carregando}
               />
-              <span className="text-green-400 font-mono text-xs">
-                {tatica.label}
-              </span>
+              <span className="text-green-400 font-mono text-xs">{tatica.label}</span>
             </label>
           ))}
         </div>
@@ -92,8 +81,8 @@ export const InjecaoSutil: React.FC<InjecaoSutilProps> = ({ onOperacaoIniciada }
         disabled={carregando}
         className="w-full bg-green-900 hover:bg-green-700 disabled:bg-gray-700 text-green-400 font-mono text-sm py-2 px-3 border border-green-500 transition-colors"
       >
-        {carregando ? '[ PROCESSANDO... ]' : '[ INICIAR OPERAÇÃO ]'}
+        {carregando ? "[ PROCESSANDO... ]" : "[ INICIAR OPERAÇÃO ]"}
       </button>
     </div>
-  )
-}
+  );
+};

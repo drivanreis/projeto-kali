@@ -1,10 +1,10 @@
-import React from 'react'
-import { Vulnerabilidade, CRITICIDADE_LABELS, CRITICIDADE_CLASSES } from '@/types'
+import React from "react";
+import { Vulnerabilidade, CRITICIDADE_LABELS, CRITICIDADE_CLASSES } from "@/types";
 
 interface CardVulnerabilidadeProps {
-  vulnerabilidade: Vulnerabilidade
-  selecionada: boolean
-  onSelect: (id: number) => void
+  vulnerabilidade: Vulnerabilidade;
+  selecionada: boolean;
+  onSelect: (id: number) => void;
 }
 
 export const CardVulnerabilidade: React.FC<CardVulnerabilidadeProps> = ({
@@ -12,8 +12,8 @@ export const CardVulnerabilidade: React.FC<CardVulnerabilidadeProps> = ({
   selecionada,
   onSelect,
 }) => {
-  const criticidadeClass = CRITICIDADE_CLASSES[vulnerabilidade.criticidade]
-  const criticidadeLabel = CRITICIDADE_LABELS[vulnerabilidade.criticidade]
+  const criticidadeClass = CRITICIDADE_CLASSES[vulnerabilidade.criticidade];
+  const criticidadeLabel = CRITICIDADE_LABELS[vulnerabilidade.criticidade];
 
   return (
     <div className="border border-green-500 p-3 mb-2 bg-black">
@@ -27,24 +27,22 @@ export const CardVulnerabilidade: React.FC<CardVulnerabilidadeProps> = ({
           aria-label={`Selecionar vulnerabilidade: ${vulnerabilidade.titulo}`}
         />
         <div className="flex-1">
-          <div
-            className={`${criticidadeClass} mb-1 font-mono text-sm font-bold text-green-400`}
-          >
+          <div className={`${criticidadeClass} mb-1 font-mono text-sm font-bold text-green-400`}>
             [{criticidadeLabel}] {vulnerabilidade.titulo}
           </div>
           <div className="text-gray-400 text-xs mt-1 font-mono">
-            {vulnerabilidade.descricao || 'Sem descrição'}
+            {vulnerabilidade.descricao || "Sem descrição"}
             <br />
-            <strong className="text-green-400">Correção:</strong>{' '}
-            {vulnerabilidade.correcao || 'Não documentada'}
+            <strong className="text-green-400">Correção:</strong>{" "}
+            {vulnerabilidade.correcao || "Não documentada"}
           </div>
           <div className="text-gray-500 text-xs mt-2 font-mono">
             {vulnerabilidade.timestamp
-              ? new Date(vulnerabilidade.timestamp).toLocaleString('pt-BR')
-              : ''}
+              ? new Date(vulnerabilidade.timestamp).toLocaleString("pt-BR")
+              : ""}
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
