@@ -65,33 +65,16 @@ NPM_VERSION=$(npm --version)
 echo -e "${GREEN}✓ npm instalado: ${NPM_VERSION}${NC}"
 
 # ===========================================================================
-# INSTALAÇÃO DAS DEPENDÊNCIAS DO BACKEND (NO CONTÊINER)
+# NOTA: Dependências do backend são instaladas automaticamente pelo Dockerfile
+# durante o build (docker compose up --build)
 # ===========================================================================
-
-echo ""
-echo -e "${YELLOW}[5/7] Instalando dependências Python no contêiner backend...${NC}"
-
-if [ ! -f "backend/requirements.txt" ]; then
-    echo -e "${RED}❌ Arquivo backend/requirements.txt não encontrado!${NC}"
-    exit 1
-fi
-
-echo "   Executando pip install -r requirements.txt no Python global do contêiner..."
-docker compose run --rm backend pip install --no-cache-dir -r requirements.txt
-
-if [ $? -eq 0 ]; then
-    echo -e "${GREEN}✓ Dependências do backend instaladas no contêiner${NC}"
-else
-    echo -e "${RED}❌ Erro ao instalar dependências do backend${NC}"
-    exit 1
-fi
 
 # ===========================================================================
 # INSTALAÇÃO DAS DEPENDÊNCIAS DO FRONTEND
 # ===========================================================================
 
 echo ""
-echo -e "${YELLOW}[6/7] Instalando dependências do frontend...${NC}"
+echo -e "${YELLOW}[5/7] Instalando dependências do frontend...${NC}"
 cd frontend
 
 if [ ! -f "package.json" ]; then
@@ -114,7 +97,7 @@ fi
 # ===========================================================================
 
 echo ""
-echo -e "${YELLOW}[7/7] Criando arquivo .env do frontend...${NC}"
+echo -e "${YELLOW}[6/7] Criando arquivo .env do frontend...${NC}"
 
 if [ -f ".env" ]; then
     echo "   Arquivo .env já existe, fazendo backup..."
@@ -150,7 +133,7 @@ cd ..
 # ===========================================================================
 
 echo ""
-echo -e "${YELLOW}Preparando diretório de dados do backend...${NC}"
+echo -e "${YELLOW}[7/7] Preparando diretório de dados do backend...${NC}"
 
 if [ ! -d "backend/data" ]; then
     mkdir -p backend/data
