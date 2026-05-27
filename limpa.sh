@@ -73,9 +73,9 @@ docker system prune -af --volumes 2>/dev/null || true
 echo "🗑️  Removendo banco SQLite e caches do projeto..."
 rm -f ./backend/data/attack_history.db ./backend/data/attack_history.db-shm ./backend/data/attack_history.db-wal 2>/dev/null || true
 
-# 9. Remover diretórios de cache locais
+# 9. Remover diretórios de cache locais (mantendo node_modules para respeitar ciclo de vida)
 echo "🗑️  Removendo diretórios de cache..."
-rm -rf frontend/node_modules .venv backend/__pycache__ frontend/dist 2>/dev/null || true
+rm -rf .venv backend/__pycache__ frontend/dist 2>/dev/null || true
 
 echo ""
 echo -e "${GREEN}"
