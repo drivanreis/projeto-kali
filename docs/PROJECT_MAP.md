@@ -6,6 +6,44 @@ O KALI-CORE é um sistema unificado de intrusão e monitoramento de rede, projet
 
 **Nova Prioridade de Inteligência:** A operação é contra **alvo dinâmico fornecido pelo usuário** via interface web. Cada operação é rastreada com seu alvo específico no banco de dados.
 
+## 🎯 Definição de Alvo (Ativo)
+
+Um **alvo** (ou **ativo**) é qualquer dispositivo, sistema, interface ou infraestrutura capaz de transmitir, receber ou intermediar dados através de algum meio de comunicação.
+
+### Características dos Ativos:
+- **Meios de Comunicação Inclusos:**
+  - Wi-Fi (wireless local)
+  - Ethernet (cabeado)
+  - Bluetooth (comunicação de curto alcance)
+  - Rede Móvel (SIM/celular 4G/5G)
+  - Satélite (comunicação orbital)
+  - Infravermelho (IR)
+  - Rádio (frequências diversas)
+  - Fibra Óptica (alta velocidade)
+  - Cabo Submarino (comunicação intercontinental)
+
+- **Identificadores Únicos:**
+  - Endereço MAC (Media Access Control)
+  - Endereço IP (IPv4/IPv6)
+  - IMEI (Identificador de Equipamentos Móveis)
+  - Outros identificadores únicos de hardware/software
+  - **Obs:** Mesmo sem hostname/SSID visível, um ativo continua sendo rastreável
+
+- **Exemplos de Ativos:**
+  - Computadores (desktop, notebook, servidor)
+  - Smartphones e tablets
+  - Roteadores e switches
+  - Impressoras de rede
+  - Câmeras IP
+  - Tomadas inteligentes
+  - Módulos Sonoff (automação)
+  - Sensores IoT
+  - Equipamentos embarcados
+  - Qualquer dispositivo "silencioso" ou sem identificação amigável
+
+### Implicação para o KALI-CORE:
+Todos esses ativos são potenciais alvos de operações de reconhecimento, análise de vulnerabilidades e testes de penetração realizado pelo sistema.
+
 **Definição de Vitória:** O objetivo final não é a destruição, mas a marcação de território (Proof of Concept). A vitória é definida por cinco ações de baixo impacto e alto valor:
 1. Injeção Visual (Web Defacement Sutil)
 2. Injeção de Persistência em Dados (Database Entry)
