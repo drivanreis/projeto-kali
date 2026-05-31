@@ -331,6 +331,67 @@ VulnerabilidadesOcorrencias = VulnerabilidadesOcorrenciasLegado
 
 
 # ═════════════════════════════════════════════════════════════════════════════
+# GERENCIADOR DE BANCO DE DADOS
+# ═════════════════════════════════════════════════════════════════════════════
+
+
+class DatabaseManager:
+    """Gerenciador de banco de dados centralizado para KALI-CORE"""
+    
+    def __init__(self):
+        """Inicializa o gerenciador de banco de dados"""
+        self.engine = create_engine_from_env()
+        self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
+        self.session = self.SessionLocal()
+        
+    def get_session(self):
+        """Retorna uma nova sessão"""
+        return self.SessionLocal()
+    
+    def close(self):
+        """Fecha a sessão atual"""
+        if self.session:
+            self.session.close()
+    
+    def save_attack(self, attack_data: dict) -> int:
+        """
+        Salva um registro de ataque no banco de dados
+        
+        Args:
+            attack_data: Dicionário com dados do ataque
+            
+        Returns:
+            ID do ataque salvo
+        """
+        try:
+            attack = AttackHistory(
+                target_ip=attack_data.get('target_ip'),
+                target_port=attack_data.get('target_port'),
+                target_service=attack_data.get('target_service'),
+                attack_phase=attack_data.get('attack_phase'),
+                attack_type=attack_data.get('attack_type'),
+                payload=attack_data.get('payload'),
+                success=attack_data.get('success', False),
+                response_code=attack_data.get('response_code'),
+                response_data=json.dumps(attack_data.get('response_data', {})) if attack_data.get('response_data') else None,
+                duration_ms=attack_data.get('duration_ms'),
+                error_message=attack_data.get('error_message'),
+                lesson_learned=attack_data.get('lesson_learned'),
+                confidence_score=attack_data.get('confidence_score', 0.5)
+            )
+            
+            self.session.add(attack)
+            self.session.commit()
+            self.session.refresh(attack)
+            
+            return attack.id
+        except Exception as e:
+            self.session.rollback()
+            print(f"Erro ao salvar ataque: {e}")
+            raise
+
+
+# ═════════════════════════════════════════════════════════════════════════════
 # UTILITÁRIOS DE BANCO DE DADOS
 # ═════════════════════════════════════════════════════════════════════════════
 
@@ -399,6 +460,8 @@ __all__ = [
     "ConfigAtaque",
     "HistoricoOperacoes",
     "VulnerabilidadesOcorrencias",
+    # Gerenciador de banco de dados
+    "DatabaseManager",
     # Utilidades
     "Base",
     "ativo_tag_association",
