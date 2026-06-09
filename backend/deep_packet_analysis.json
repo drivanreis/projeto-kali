@@ -1,0 +1,16 @@
+{
+  "data": "2026-06-04 20:42:27",
+  "alvo": "138.122.82.214",
+  "ttl_analysis": {
+    "valores": [],
+    "variancia": 0
+  },
+  "ip_id_analysis": {
+    "valores": [],
+    "sequencial": false
+  },
+  "tunneis_detectados": [],
+  "conclusoes": [
+    "Nenhum t\u00fanel de acesso remoto detectado"
+  ]
+}

@@ -174,7 +174,7 @@ class PopuladorBancoDados:
         self.records_criados = 0
     
     def verificar_banco_vazio(self) -> bool:
-        """Verifica se o banco está vazio (sem alvos ou operações)"""
+        """Verifica se o banco está vazio (sem clientes ou operações)"""
         try:
             count_alvos = self.db.session.query(Alvo).count()
             count_ops = self.db.session.query(HistoricoOperacoes).count()
@@ -188,7 +188,7 @@ class PopuladorBancoDados:
             return False
     
     def criar_alvos_dinamicos(self) -> Dict[str, int]:
-        """Cria alvos dinâmicos, garantindo o IP histórico principal"""
+        """Cria clientes dinâmicos, garantindo o IP histórico principal"""
         print("[POPULATE] Criando alvos dinâmicos...")
         alvos_map = {}
         
@@ -209,7 +209,7 @@ class PopuladorBancoDados:
         eventos_criados = 0
         timestamp_base = datetime.now() - timedelta(days=30)  # Últimos 30 dias
         
-        # Para cada alvo
+        # Para cada cliente
         for ip, alvo_id in alvos_map.items():
             # Define densidade maior para o IP histórico
             densidade = 40 if ip == self.IP_HISTORICO else 15
@@ -317,7 +317,7 @@ class PopuladorBancoDados:
         print(f"[POPULATE] Marcando eventos do {self.IP_HISTORICO} como Contra-Atacados...")
         
         try:
-            # Busca alvo histórico
+            # Busca cliente histórico
             alvo_historico = self.db.session.query(Alvo).filter(
                 Alvo.ip_dominio == self.IP_HISTORICO
             ).first()
@@ -326,7 +326,7 @@ class PopuladorBancoDados:
                 print(f"[POPULATE] ✗ Alvo histórico {self.IP_HISTORICO} não encontrado")
                 return
             
-            # Busca todas as operações do alvo histórico
+            # Busca todas as operações do cliente histórico
             operacoes = self.db.session.query(HistoricoOperacoes).filter(
                 HistoricoOperacoes.alvo_id == alvo_historico.id
             ).all()
@@ -363,7 +363,7 @@ class PopuladorBancoDados:
             print("[POPULATE] ⚠️  Banco já contém dados. Pulando população automática.")
             return False
         
-        # 2. Cria alvos dinâmicos
+        # 2. Cria clientes dinâmicos
         alvos_map = self.criar_alvos_dinamicos()
         if not alvos_map:
             print("[POPULATE] ✗ Falha ao criar alvos")

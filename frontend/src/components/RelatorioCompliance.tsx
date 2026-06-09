@@ -1,5 +1,5 @@
 import React from "react";
-import { Vulnerabilidade, RelatorioItem } from "@/types";
+import { Vulnerabilidade, RelatorioItem, higienizarTexto } from "@/types";
 
 interface RelatorioComplianceProps {
   vulnerabilidades: Vulnerabilidade[];
@@ -168,7 +168,7 @@ ${conteudo}
             return (
               <div key={relatorio.vulnerabilidade.id} className="border-2 border-black p-6">
                 <h3 className={`text-xl font-bold mb-1 font-mono ${criticidadeClass}`}>
-                  [{idx + 1}] {relatorio.vulnerabilidade.titulo}
+                  [{idx + 1}] {higienizarTexto(relatorio.vulnerabilidade.titulo)}
                 </h3>
                 <p className="text-sm text-gray-600 font-mono mb-4">
                   Criticidade: {relatorio.vulnerabilidade.criticidade.toUpperCase()}

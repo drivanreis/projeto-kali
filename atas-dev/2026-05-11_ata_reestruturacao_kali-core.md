@@ -28,7 +28,7 @@ Transformação completa do Projeto KALI de "scripts isolados" para **Sistema Un
 - **Impacto:** Dificuldade de análise, perda de inteligência
 - **Causa:** Ausência de política centralizada de armazenamento
 
-### 4. **FALTA DE FOCO NO ALVO**
+### 4. **FALTA DE FOCO NO CLIENTE**
 - **Situação:** Scripts genéricos sem foco específico em 138.122.82.214
 - **Impacto:** Diluição de esforços e recursos
 - **Causa:** Desenvolvimento reativo sem estratégia definida
@@ -123,7 +123,7 @@ projeto-kali/
 
 ## 🎯 OBJETIVOS ESTRATÉGICOS ATINGIDOS
 
-### 1. **FOCO NO ALVO 138.122.82.214**
+### 1. **FOCO NO CLIENTE 138.122.82.214**
 - **Implementado:** Todos os módulos configurados para o IP específico
 - **Resultado:** Máxima eficiência operacional
 
@@ -168,7 +168,7 @@ projeto-kali/
 - [x] Desempenho otimizado
 - [x] Logs centralizados
 - [x] Interface unificada
-- [x] Foco total no alvo
+- [x] Foco total no cliente
 
 ### 🎯 **KPIs:**
 - **Redução de Complexidade:** 80%
@@ -194,7 +194,7 @@ projeto-kali/
 
 A reestruturação KALI-CORE transformou completamente a operação, passando de um conjunto de scripts isolados para um sistema profissional de intrusão. 
 
-**Impacto Principal:** Agora o operador Ivan tem uma plataforma unificada, eficiente e focada, com capacidade de detectar o "batimento cardíaco" do servidor alvo e responder automaticamente com análises profundas.
+**Impacto Principal:** Agora o operador Ivan tem uma plataforma unificada, eficiente e focada, com capacidade de detectar o "batimento cardíaco" do servidor cliente e responder automaticamente com análises profundas.
 
 **Próxima Fase:** Operação contínua com foco em explorar as vulnerabilidades detectadas através do banner grabbing e análise de Double NAT.
 

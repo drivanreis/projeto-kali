@@ -93,7 +93,7 @@ class MonitorModule:
                 time.sleep(60)
     
     def verificar_portas_criticas(self):
-        """Verifica portas críticas quando alvo ativo"""
+        """Verifica portas críticas quando cliente ativo"""
         self.log("PORTAS", "Verificando portas críticas...")
         
         portas_abertas = []
@@ -165,7 +165,7 @@ class MonitorModule:
                     
                     for line in lines:
                         if 'ESTABLISHED' in line and self.target in line:
-                            # Conexão ativa com o alvo
+                            # Conexão ativa com o cliente
                             parts = line.split()
                             if len(parts) >= 5:
                                 dst = parts[4]
@@ -250,7 +250,7 @@ class MonitorModule:
                 if result.returncode == 0:
                     lines = result.stdout.split('\n')
                     
-                    # Procura por conexões com o alvo
+                    # Procura por conexões com o cliente
                     conexoes_alvo = []
                     for line in lines:
                         if self.target in line and 'ESTABLISHED' in line:

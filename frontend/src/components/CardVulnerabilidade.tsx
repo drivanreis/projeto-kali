@@ -1,5 +1,5 @@
 import React from "react";
-import { Vulnerabilidade, CRITICIDADE_LABELS, CRITICIDADE_CLASSES } from "@/types";
+import { Vulnerabilidade, CRITICIDADE_LABELS, CRITICIDADE_CLASSES, higienizarTexto } from "@/types";
 
 interface CardVulnerabilidadeProps {
   vulnerabilidade: Vulnerabilidade;
@@ -24,17 +24,17 @@ export const CardVulnerabilidade: React.FC<CardVulnerabilidadeProps> = ({
           data-id={vulnerabilidade.id}
           checked={selecionada}
           onChange={() => onSelect(vulnerabilidade.id)}
-          aria-label={`Selecionar vulnerabilidade: ${vulnerabilidade.titulo}`}
+          aria-label={`Selecionar vulnerabilidade: ${higienizarTexto(vulnerabilidade.titulo)}`}
         />
         <div className="flex-1">
-          <div className={`${criticidadeClass} mb-1 font-mono text-sm font-bold text-green-400`}>
-            [{criticidadeLabel}] {vulnerabilidade.titulo}
+          <div className={`${criticidadeClass} mb-1 font-mono text-sm font-bold`}>
+            [{criticidadeLabel}] {higienizarTexto(vulnerabilidade.titulo)}
           </div>
           <div className="text-gray-400 text-xs mt-1 font-mono">
-            {vulnerabilidade.descricao || "Sem descrição"}
+            {higienizarTexto(vulnerabilidade.descricao) || "Sem descrição"}
             <br />
             <strong className="text-green-400">Correção:</strong>{" "}
-            {vulnerabilidade.correcao || "Não documentada"}
+            {higienizarTexto(vulnerabilidade.correcao) || "Não documentada"}
           </div>
           <div className="text-gray-500 text-xs mt-2 font-mono">
             {vulnerabilidade.timestamp
@@ -46,3 +46,4 @@ export const CardVulnerabilidade: React.FC<CardVulnerabilidadeProps> = ({
     </div>
   );
 };
+

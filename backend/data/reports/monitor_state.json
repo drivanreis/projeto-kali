@@ -1,5 +1,5 @@
 {
-  "sentinela_ativa": false,
+  "sentinela_ativa": true,
   "portas_monitoradas": [
     443,
     3389,
@@ -8,7 +8,7 @@
     5902,
     5903
   ],
-  "ultima_verificacao": "2026-05-15 18:55:08",
+  "ultima_verificacao": "2026-06-04 23:26:26",
   "total_alertas": 22,
   "alertas_recentes": [
     {

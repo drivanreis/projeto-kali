@@ -14,7 +14,7 @@ Elevação do KALI-CORE ao propósito real de Orquestrador de Arsenal, com foco 
 ## 🚨 NOVA PRIORIDADE DE INTELIGÊNCIA
 
 ### Contexto
-O alvo 138.122.82.214 não é um servidor isolado, mas uma infraestrutura baseada em:
+O cliente 138.122.82.214 não é um servidor isolado, mas uma infraestrutura baseada em:
 - **MPLS** (Multiprotocol Label Switching)
 - **BIND** (Berkeley Internet Name Domain)
 - **ASN da MOB** (Autonomous System Number)
@@ -173,7 +173,7 @@ tshark -i any -a duration:300 -f 'host 138.122.82.214' \
 - **Estado térmico:** Estável (~32°C)
 - **Sala:** 16°C
 - **Sistema:** Kali Linux
-- **Alvo:** 138.122.82.214
+- **Cliente:** 138.122.82.214
 - **Infraestrutura:** MPLS + BIND sob ASN MOB
 
 ---

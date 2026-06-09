@@ -9,10 +9,13 @@ export default defineConfig({
     strictPort: true,
     host: true,
     cors: true,
+    watch: {
+      usePolling: true,
+    },
   },
   build: {
     target: 'esnext',
-    minify: 'terser',
+    minify: 'esbuild',
     sourcemap: false,
   },
   resolve: {

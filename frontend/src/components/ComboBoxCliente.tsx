@@ -1,16 +1,16 @@
 import React from "react";
-import "@/styles/ComboBoxAlvo.css";
+import "@/styles/ComboBoxCliente.css";
 
-interface ComboBoxAlvoProps {
-  alvos: string[];
+interface ComboBoxClienteProps {
+  clientes: string[];
   valor: string;
   onChange: (valor: string) => void;
   label?: string;
   disabled?: boolean;
 }
 
-export const ComboBoxAlvo: React.FC<ComboBoxAlvoProps> = ({
-  alvos,
+export const ComboBoxCliente: React.FC<ComboBoxClienteProps> = ({
+  clientes,
   valor,
   onChange,
   label = "IP / DOMÍNIO:",
@@ -18,20 +18,20 @@ export const ComboBoxAlvo: React.FC<ComboBoxAlvoProps> = ({
 }) => {
   return (
     <div>
-      <label htmlFor="alvo-select" className="alvo-label">
+      <label htmlFor="cliente-select" className="cliente-label">
         {label}
       </label>
       <select
-        id="alvo-select"
+        id="cliente-select"
         value={valor}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className="alvo-select"
+        className="cliente-select"
       >
         <option value="">-- TODOS --</option>
-        {alvos.map((alvo) => (
-          <option key={alvo} value={alvo}>
-            {alvo}
+        {clientes.map((cliente) => (
+          <option key={cliente} value={cliente}>
+            {cliente}
           </option>
         ))}
       </select>

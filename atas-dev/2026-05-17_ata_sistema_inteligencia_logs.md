@@ -14,8 +14,8 @@ Como parte da estratégia de evolução do KALI-CORE para um sistema de IA autô
 **Estrutura da tabela `attack_history`:**
 - `id`: Identificador único (auto-incremento)
 - `timestamp`: Data/hora do ataque
-- `target_ip`: IP do alvo (IPv4/IPv6)
-- `target_port`: Porta alvo
+- `target_ip`: IP do cliente (IPv4/IPv6)
+- `target_port`: Porta cliente
 - `target_service`: Serviço detectado
 - `attack_phase`: Fase do ataque (1-8)
 - `attack_type`: Tipo de ataque (nikto, gobuster, etc)

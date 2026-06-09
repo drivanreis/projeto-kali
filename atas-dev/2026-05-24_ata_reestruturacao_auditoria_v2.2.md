@@ -106,28 +106,28 @@ Cada vulnerabilidade agora tem:
 ### Schema Anterior
 - Tabela única: `AttackHistory` (flat, sem relacionamentos)
 - Dificuldade: Filtrar por `target_ip` + `attack_type` retornava duplicatas
-- Problema: Não havia rastreamento de alvos únicos vs. configurações vs. operações
+- Problema: Não havia rastreamento de clientes únicos vs. configurações vs. operações
 
 ### Schema Novo (Relacional)
 ```
-Alvos (1) ──┬── (N) ConfigAtaque
+Clientes (1) ──┬── (N) ConfigAtaque
             └── (N) HistoricoOperacoes
 ```
 
-#### Tabela 1: `Alvos`
+#### Tabela 1: `Clientes`
 - `id` (PK)
 - `ip_dominio` (UNIQUE)
 - `data_criacao`
 
 #### Tabela 2: `ConfigAtaque`
 - `id` (PK)
-- `alvo_id` (FK → Alvos.id)
+- `alvo_id` (FK → Clientes.id)
 - `porta, protocolo, servico_detectado`
 - `timestamp`
 
 #### Tabela 3: `HistoricoOperacoes`
 - `id` (PK)
-- `alvo_id` (FK → Alvos.id)
+- `alvo_id` (FK → Clientes.id)
 - `config_id` (FK → ConfigAtaque.id)
 - `attack_phase, attack_type, payload`
 - `success, response_code, response_data`
@@ -144,7 +144,7 @@ Alvos (1) ──┬── (N) ConfigAtaque
 - `timestamp`
 
 #### Benefícios
-✅ Rastreamento completo por alvo  
+✅ Rastreamento completo por cliente  
 ✅ Consolidação de dados em tabela de análise  
 ✅ Queries eficientes com JOINs  
 ✅ Suporte para relatórios estratégicos  
@@ -182,8 +182,8 @@ function emitirLaudo() {
 ### Backend - `DatabaseManager.get_alvos_unicos()`
 ```python
 def get_alvos_unicos(self) -> list:
-    alvos = self.session.query(Alvo.ip_dominio).distinct().all()
-    return [alvo[0] for alvo in alvos if alvo[0]]
+    clientes = self.session.query(Cliente.ip_dominio).distinct().all()
+    return [cliente[0] for cliente in clientes if cliente[0]]
     # Fallback para legacy AttackHistory se vazio
 ```
 
@@ -216,7 +216,7 @@ GET /api/gerar-laudo?target_ip=192.168.1.1&attack_type=nikto&itens=1,3,5
 4. Gera HTML profissional pronto para `Ctrl+P` → PDF
 
 ### HTML Gerado
-- Metadados: Alvo, tipo de ataque, data, total de incidentes
+- Metadados: Cliente, tipo de ataque, data, total de incidentes
 - Descrição da falha (do dicionário MITIGACOES)
 - Impacto de segurança
 - Recomendações de correção (lista)

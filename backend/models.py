@@ -186,7 +186,7 @@ class Tag(Base):
 
 
 class AlvoLegado(Base):
-    """Tabela Legada 1: Alvos únicos"""
+    """Tabela Legada 1: Clientes únicos"""
     __tablename__ = 'alvos'
     
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -278,7 +278,7 @@ class AttackHistory(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
     
-    # Informações do Alvo
+    # Informações do Cliente
     target_ip = Column(String(45))
     target_port = Column(Integer)
     target_service = Column(String(50))
@@ -291,7 +291,7 @@ class AttackHistory(Base):
     # Resultados
     success = Column(Boolean, default=False)
     response_code = Column(Integer)
-    response_data = Column(Text)
+    response_data = Column(JSONB)  # Alterado de Text para JSONB para payloads dinâmicos
     
     # Metadados
     duration_ms = Column(Float)
@@ -320,7 +320,7 @@ class AttackHistory(Base):
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# ALIASES PARA COMPATIBILIDADE (Manter nome Alvo, ConfigAtaque, etc)
+# ALIASES PARA COMPATIBILIDADE (Manter nome Cliente, ConfigAtaque, etc)
 # ═════════════════════════════════════════════════════════════════════════════
 
 # Exports para manter compatibilidade com código existente
@@ -364,6 +364,18 @@ class DatabaseManager:
             ID do ataque salvo
         """
         try:
+            # Trata response_data: pode ser dict ou string (json.dumps)
+            response_data = attack_data.get('response_data')
+            if isinstance(response_data, dict):
+                response_data = response_data
+            elif isinstance(response_data, str):
+                try:
+                    response_data = json.loads(response_data)
+                except:
+                    response_data = {}
+            else:
+                response_data = {}
+            
             attack = AttackHistory(
                 target_ip=attack_data.get('target_ip'),
                 target_port=attack_data.get('target_port'),
@@ -373,7 +385,7 @@ class DatabaseManager:
                 payload=attack_data.get('payload'),
                 success=attack_data.get('success', False),
                 response_code=attack_data.get('response_code'),
-                response_data=json.dumps(attack_data.get('response_data', {})) if attack_data.get('response_data') else None,
+                response_data=response_data,
                 duration_ms=attack_data.get('duration_ms'),
                 error_message=attack_data.get('error_message'),
                 lesson_learned=attack_data.get('lesson_learned'),
@@ -389,6 +401,314 @@ class DatabaseManager:
             self.session.rollback()
             print(f"Erro ao salvar ataque: {e}")
             raise
+    
+    def save_alvo(self, target: str) -> int:
+        """
+        Salva um alvo no banco de dados (compatibilidade com main_fastapi.py)
+        
+        Args:
+            target: IP ou domínio do alvo
+            
+        Returns:
+            ID do alvo salvo
+        """
+        try:
+            # Verifica se cliente já existe
+            alvo_existente = self.session.query(AlvoLegado).filter(
+                AlvoLegado.ip_dominio == target
+            ).first()
+            
+            if alvo_existente:
+                return alvo_existente.id
+            
+            # Cria novo cliente
+            alvo = AlvoLegado(ip_dominio=target)
+            self.session.add(alvo)
+            self.session.commit()
+            self.session.refresh(alvo)
+            
+            return alvo.id
+        except Exception as e:
+            self.session.rollback()
+            print(f"Erro ao salvar alvo: {e}")
+            raise
+    
+    def save_operacao(self, alvo_id: int, attack_type: str, attack_phase: str, 
+                     payload: str, success: bool, response_code: int, 
+                     response_data: str) -> int:
+        """
+        Salva uma operação de ataque no banco de dados (compatibilidade com main_fastapi.py)
+        
+        Args:
+            alvo_id: ID do alvo
+            attack_type: Tipo de ataque
+            attack_phase: Fase do ataque
+            payload: Payload do ataque
+            success: Sucesso da operação
+            response_code: Código de resposta
+            response_data: Dados de resposta (JSON string)
+            
+        Returns:
+            ID da operação salva
+        """
+        try:
+            operacao = HistoricoOperacoesLegado(
+                alvo_id=alvo_id,
+                config_id=None,
+                attack_phase=attack_phase,
+                attack_type=attack_type,
+                payload=payload,
+                success=success,
+                response_code=response_code,
+                response_data=response_data,
+                status_fase='concluido' if success else 'falhou',
+                duration_ms=0.0,
+                error_message=None if success else 'Operação falhou',
+                lesson_learned=f'Operação {attack_type} {"bem-sucedida" if success else "falhou"}',
+                confidence_score=0.8 if success else 0.3
+            )
+            
+            self.session.add(operacao)
+            self.session.commit()
+            self.session.refresh(operacao)
+            
+            return operacao.id
+        except Exception as e:
+            self.session.rollback()
+            print(f"Erro ao salvar operação: {e}")
+            raise
+    
+    def save_vulnerabilidade(self, operacao_id: int, criticidade: str, 
+                           titulo: str, descricao: str, correcao: str) -> int:
+        """
+        Salva uma vulnerabilidade no banco de dados (compatibilidade com main_fastapi.py)
+        
+        Args:
+            operacao_id: ID da operação
+            criticidade: Criticidade da vulnerabilidade
+            titulo: Título da vulnerabilidade
+            descricao: Descrição da vulnerabilidade
+            correcao: Correção recomendada
+            
+        Returns:
+            ID da vulnerabilidade salva
+        """
+        try:
+            vuln = VulnerabilidadesOcorrenciasLegado(
+                operacao_id=operacao_id,
+                criticidade=criticidade,
+                titulo=titulo,
+                descricao=descricao,
+                correcao=correcao
+            )
+            
+            self.session.add(vuln)
+            self.session.commit()
+            self.session.refresh(vuln)
+            
+            return vuln.id
+        except Exception as e:
+            self.session.rollback()
+            print(f"Erro ao salvar vulnerabilidade: {e}")
+            raise
+    
+    def get_attack_history(self, limit: int = 100, phase: str = None) -> list:
+        """
+        Recupera histórico de ataques do banco de dados
+        
+        Args:
+            limit: Limite de registros
+            phase: Filtro por fase de ataque
+            
+        Returns:
+            Lista de ataques em formato de dicionário
+        """
+        try:
+            query = self.session.query(AttackHistory)
+            
+            if phase:
+                query = query.filter(AttackHistory.attack_phase == phase)
+            
+            attacks = query.order_by(AttackHistory.timestamp.desc()).limit(limit).all()
+            
+            return [attack.to_dict() for attack in attacks]
+        except Exception as e:
+            self.session.rollback()
+            print(f"Erro ao recuperar histórico: {e}")
+            return []
+    
+    def get_alvos_unicos(self) -> list:
+        """
+        Recupera lista de alvos únicos do histórico de ataques
+        
+        Returns:
+            Lista de IPs únicos
+        """
+        try:
+            alvos = self.session.query(AttackHistory.target_ip).distinct().all()
+            return [alvo[0] for alvo in alvos if alvo[0]]
+        except Exception as e:
+            self.session.rollback()
+            print(f"Erro ao recuperar alvos únicos: {e}")
+            return []
+    
+    def get_attack_types_unicos(self) -> list:
+        """
+        Recupera lista de tipos de ataque únicos do histórico
+        
+        Returns:
+            Lista de tipos de ataque únicos
+        """
+        try:
+            tipos = self.session.query(AttackHistory.attack_type).distinct().all()
+            return [tipo[0] for tipo in tipos if tipo[0]]
+        except Exception as e:
+            self.session.rollback()
+            print(f"Erro ao recuperar tipos de ataque: {e}")
+            return []
+    
+    def get_vulnerabilidades_filtradas(self, alvo_ip: str = None, attack_type: str = None) -> list:
+        """
+        Recupera vulnerabilidades filtradas por alvo e tipo de ataque
+        
+        Args:
+            alvo_ip: Filtro por IP do alvo
+            attack_type: Filtro por tipo de ataque
+            
+        Returns:
+            Lista de vulnerabilidades em formato de dicionário
+        """
+        try:
+            query = self.session.query(VulnerabilidadesOcorrenciasLegado)
+            
+            if alvo_ip or attack_type:
+                # Join com operações para filtrar
+                query = query.join(HistoricoOperacoesLegado)
+                
+                if alvo_ip:
+                    # Filtra por cliente através de operações
+                    operacoes_alvo = self.session.query(HistoricoOperacoesLegado.id).join(
+                        AlvoLegado
+                    ).filter(AlvoLegado.ip_dominio == alvo_ip).all()
+                    op_ids = [op[0] for op in operacoes_alvo]
+                    query = query.filter(VulnerabilidadesOcorrenciasLegado.operacao_id.in_(op_ids))
+                
+                if attack_type:
+                    operacoes_tipo = self.session.query(HistoricoOperacoesLegado.id).filter(
+                        HistoricoOperacoesLegado.attack_type == attack_type
+                    ).all()
+                    op_ids = [op[0] for op in operacoes_tipo]
+                    query = query.filter(VulnerabilidadesOcorrenciasLegado.operacao_id.in_(op_ids))
+            
+            vulns = query.all()
+            return [vuln.to_dict() for vuln in vulns]
+        except Exception as e:
+            self.session.rollback()
+            print(f"Erro ao recuperar vulnerabilidades: {e}")
+            return []
+    
+    def get_operacoes_por_filtros(self, alvo_ip: str = None, attack_type: str = None) -> list:
+        """
+        Recupera operações filtradas por alvo e tipo de ataque
+        """
+        try:
+            query = self.session.query(HistoricoOperacoesLegado)
+            if alvo_ip:
+                query = query.join(AlvoLegado).filter(AlvoLegado.ip_dominio == alvo_ip)
+            if attack_type:
+                query = query.filter(HistoricoOperacoesLegado.attack_type == attack_type)
+            operacoes = query.all()
+            return [{
+                'id': op.id,
+                'alvo_id': op.alvo_id,
+                'attack_phase': op.attack_phase,
+                'attack_type': op.attack_type,
+                'payload': op.payload,
+                'success': op.success,
+                'response_code': op.response_code,
+                'response_data': op.response_data,
+                'status_fase': op.status_fase,
+                'timestamp': op.timestamp.isoformat() if op.timestamp else None,
+                'duration_ms': op.duration_ms,
+                'error_message': op.error_message,
+                'lesson_learned': op.lesson_learned,
+                'confidence_score': op.confidence_score
+            } for op in operacoes]
+        except Exception as e:
+            self.session.rollback()
+            print(f"Erro ao recuperar operacoes por filtros: {e}")
+            return []
+
+    def get_statistics(self) -> dict:
+        """
+        Calcula estatísticas do histórico de ataques
+        
+        Returns:
+            Dicionário com estatísticas
+        """
+        try:
+            total_attacks = self.session.query(AttackHistory).count()
+            successful_attacks = self.session.query(AttackHistory).filter(
+                AttackHistory.success == True
+            ).count()
+            failed_attacks = total_attacks - successful_attacks
+            
+            # Ataques por tipo
+            attacks_by_type = {}
+            tipos = self.get_attack_types_unicos()
+            for tipo in tipos:
+                count = self.session.query(AttackHistory).filter(
+                    AttackHistory.attack_type == tipo
+                ).count()
+                attacks_by_type[tipo] = count
+            
+            # Ataques por fase
+            attacks_by_phase = {}
+            fases = ['fase_1', 'fase_2', 'fase_3', 'fase_4', 'fase_5', 'fase_6', 'fase_7', 'fase_8']
+            for fase in fases:
+                count = self.session.query(AttackHistory).filter(
+                    AttackHistory.attack_phase == fase
+                ).count()
+                if count > 0:
+                    attacks_by_phase[fase] = count
+            
+            return {
+                'total_attacks': total_attacks,
+                'successful_attacks': successful_attacks,
+                'failed_attacks': failed_attacks,
+                'success_rate': (successful_attacks / total_attacks * 100) if total_attacks > 0 else 0,
+                'attacks_by_type': attacks_by_type,
+                'attacks_by_phase': attacks_by_phase,
+                'unique_targets': len(self.get_alvos_unicos())
+            }
+        except Exception as e:
+            self.session.rollback()
+            print(f"Erro ao calcular estatísticas: {e}")
+            return {}
+    
+    def export_training_dataset(self, output_path: str) -> int:
+        """
+        Exporta dataset para fine-tuning do Professor Kali
+        
+        Args:
+            output_path: Caminho do arquivo de saída
+            
+        Returns:
+            Número de registros exportados
+        """
+        try:
+            attacks = self.get_attack_history(limit=10000)
+            
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            
+            with open(output_path, 'w') as f:
+                for attack in attacks:
+                    f.write(json.dumps(attack) + '\n')
+            
+            return len(attacks)
+        except Exception as e:
+            print(f"Erro ao exportar dataset: {e}")
+            return 0
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -437,6 +757,20 @@ def get_session_factory():
 
 
 # ═════════════════════════════════════════════════════════════════════════════
+# TABELA: CLIENTE - Cadastro puritano de clientes
+# ═════════════════════════════════════════════════════════════════════════════
+
+class Cliente(Base):
+    """Cadastro simples de clientes com IP e nome"""
+    __tablename__ = "cliente"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    nome_cliente = Column(String(255), nullable=False)
+    ip = Column(String(50), nullable=False)
+    criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+# ═════════════════════════════════════════════════════════════════════════════
 # EXPORTS
 # ═════════════════════════════════════════════════════════════════════════════
 
@@ -449,6 +783,8 @@ __all__ = [
     "DadosBrutos",
     "Evento",
     "Tag",
+    # Cadastro de clientes
+    "Cliente",
     # Legado (compatibilidade)
     "AlvoLegado",
     "ConfigAtaqueLegado",

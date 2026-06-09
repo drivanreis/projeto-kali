@@ -1,20 +1,20 @@
-# ATA: Definição de Alvo (Ativo) - Conceitos Fundamentais
+# ATA: Definição de Cliente (Ativo) - Conceitos Fundamentais
 
 **Data:** 30 de maio de 2026  
 **Participante:** Definição conceitual do sistema KALI-CORE  
-**Assunto:** Registro formal da definição de "Alvo" ou "Ativo" para o projeto
+**Assunto:** Registro formal da definição de "Cliente" ou "Ativo" para o projeto
 
 ---
 
 ## 📋 Sumário Executivo
 
-Definição precisa e abrangente do conceito de "alvo" ou "ativo" no contexto do KALI-CORE. Este conceito é fundamental para delimitar o escopo de operações do sistema.
+Definição precisa e abrangente do conceito de "cliente" ou "ativo" no contexto do KALI-CORE. Este conceito é fundamental para delimitar o escopo de operações do sistema.
 
 ---
 
-## 🎯 Definição de Alvo (Ativo)
+## 🎯 Definição de Cliente (Ativo)
 
-Um **alvo** (ou **ativo**) é qualquer dispositivo, sistema, interface ou infraestrutura capaz de transmitir, receber ou intermediar dados através de algum meio de comunicação.
+Um **cliente** (ou **ativo**) é qualquer dispositivo, sistema, interface ou infraestrutura capaz de transmitir, receber ou intermediar dados através de algum meio de comunicação.
 
 ### Critérios de Identificação
 
@@ -123,7 +123,7 @@ Um equipamento que não possui identificação amigável (hostname, SSII) ou que
 ## 🛡️ Implicações para o KALI-CORE
 
 ### Escopo de Operações
-- Todo ativo identificável é um potencial alvo
+- Todo ativo identificável é um potencial cliente
 - Operações podem cobrir qualquer dos 5 módulos core:
   - `recon.py` - Reconhecimento de ativos
   - `deep_packet.py` - Análise de tráfego
@@ -132,7 +132,7 @@ Um equipamento que não possui identificação amigável (hostname, SSII) ou que
   - `engine.py` - Orquestração inteligente
 
 ### Banco de Dados
-- Tabela `alvos` deve aceitar qualquer formato de IP/domínio/MAC
+- Tabela `clientes` deve aceitar qualquer formato de IP/domínio/MAC
 - `ConfigAtaque` adapta-se a protocolos específicos do ativo
 - `HistoricoOperacoes` registra tentativas contra cada ativo
 
@@ -157,10 +157,10 @@ Um equipamento que não possui identificação amigável (hostname, SSII) ou que
 
 ## 📚 Referências Internas
 
-- `docs/PROJECT_MAP.md` - Seção "Definição de Alvo (Ativo)"
+- `docs/PROJECT_MAP.md` - Seção "Definição de Cliente (Ativo)"
 - `backend/core/recon.py` - Lógica de descoberta de ativos
-- `backend/models.py` - Schema de dados para Alvos
-- Tabela `alvos` no banco de dados SQLite
+- `backend/models.py` - Schema de dados para Clientes
+- Tabela `clientes` no banco de dados SQLite
 
 ---
 

@@ -40,9 +40,9 @@ Reestruturação final do KALI-CORE com foco em performance total e conquista do
 
 **Funcionalidades:**
 - ✅ TCP-Ping fallback na porta 443
-- Se alvo não responder ao ping, muda para TCP-Ping
+- Se cliente não responder ao ping, muda para TCP-Ping
 - Para loop de erro de ping
-- Detecta alvo ativo mesmo com ICMP bloqueado
+- Detecta cliente ativo mesmo com ICMP bloqueado
 
 ### 2. Inteligência de Infraestrutura (ASN/BIND)
 
@@ -74,7 +74,7 @@ Reestruturação final do KALI-CORE com foco em performance total e conquista do
 - Loop de recon não reinicia processos ativos
 
 - ✅ `buscar_arquivos_config_expostos()` - Busca de arquivos de configuração
-- Arquivos alvo: .env, config.php, web.config, settings.json, config.ini, .git/config, wp-config.php, database.yml
+- Arquivos cliente: .env, config.php, web.config, settings.json, config.ini, .git/config, wp-config.php, database.yml
 - Tenta HTTP e HTTPS
 - Reporta 'BANDEIRA DISPONÍVEL' ao encontrar
 - Marca bandeira automaticamente
@@ -162,7 +162,7 @@ Reestruturação final do KALI-CORE com foco em performance total e conquista do
 
 **Módulo MONITOR:**
 - TCP-Ping fallback (porta 443)
-- Detecção de alvo ativo mesmo com ICMP bloqueado
+- Detecção de cliente ativo mesmo com ICMP bloqueado
 
 **Módulo DEEP PACKET:**
 - Tratamento de erro TTL (ValueError)
@@ -182,7 +182,7 @@ Reestruturação final do KALI-CORE com foco em performance total e conquista do
 - **Estado térmico:** Estável (~32°C)
 - **Sala:** 16°C
 - **Sistema:** Kali Linux
-- **Alvo:** 138.122.82.214
+- **Cliente:** 138.122.82.214
 - **Infraestrutura:** MPLS + BIND sob ASN MOB
 
 ---

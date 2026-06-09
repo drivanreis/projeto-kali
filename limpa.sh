@@ -51,15 +51,15 @@ docker rm -f $(docker ps -aq) 2>/dev/null || true
 
 # 3. Remover TODAS as imagens
 echo "🗑️  Removendo TODAS as imagens..."
-docker rmi -f $(docker images -aq) 2>/dev/null || true
+# docker rmi -f $(docker images -aq) 2>/dev/null || true
 
 # 4. Remover TODAS as redes customizadas
 echo "🗑️  Removendo TODAS as redes..."
-docker network prune -f 2>/dev/null || true
+# docker network prune -f 2>/dev/null || true
 
 # 5. Remover TODOS os volumes
 echo "🗑️  Removendo TODOS os volumes..."
-docker volume rm $(docker volume ls -q) 2>/dev/null || true
+# docker volume rm $(docker volume ls -q) 2>/dev/null || true
 
 # 6. Limpar TODO o cache de build
 echo "🗑️  Limpando TODO o cache de build..."
@@ -67,11 +67,11 @@ docker builder prune -af 2>/dev/null || true
 
 # 7. Limpeza final (system prune)
 echo "🗑️  Limpeza final do sistema..."
-docker system prune -af --volumes 2>/dev/null || true
+# docker system prune -af --volumes 2>/dev/null || true
 
 # 8. Remover banco SQLite local mapeado (se existir)
 echo "🗑️  Removendo banco SQLite e caches do projeto..."
-rm -f ./backend/data/attack_history.db ./backend/data/attack_history.db-shm ./backend/data/attack_history.db-wal 2>/dev/null || true
+# rm -f ./backend/data/attack_history.db ./backend/data/attack_history.db-shm ./backend/data/attack_history.db-wal 2>/dev/null || true
 
 # 9. Remover diretórios de cache locais (mantendo node_modules para respeitar ciclo de vida)
 echo "🗑️  Removendo diretórios de cache..."

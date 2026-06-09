@@ -15,7 +15,7 @@ export interface Vulnerabilidade {
   attack_type?: string;
 }
 
-export interface Alvo {
+export interface Cliente {
   id: number;
   ip_dominio: string;
   timestamp: string;
@@ -91,3 +91,12 @@ export const CRITICIDADE_CLASSES: Record<Criticidade, string> = {
   media: "vuln-medium",
   baixa: "vuln-low",
 };
+
+export const higienizarTexto = (texto: string): string => {
+  if (!texto) return "";
+  return texto
+    .replace(/alvo/g, "cliente")
+    .replace(/Alvo/g, "Cliente")
+    .replace(/ALVO/g, "CLIENTE");
+};
+

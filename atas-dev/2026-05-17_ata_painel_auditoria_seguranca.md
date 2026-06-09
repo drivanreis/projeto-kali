@@ -171,7 +171,7 @@ document.addEventListener('click', function(event) {
 - **Estado térmico:** Estável (~32°C)
 - **Sala:** 16°C
 - **Sistema:** Kali Linux
-- **Alvo:** 138.122.82.214
+- **Cliente:** 138.122.82.214
 - **Infraestrutura:** MPLS + BIND sob ASN MOB
 
 ---

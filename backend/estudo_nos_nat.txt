@@ -9,3 +9,202 @@
 [2026-05-15 18:53:42] [TSHARK] Monitorando assinaturas de túneis (MPLS/GRE/AnyDesk/RDP)...
 [2026-05-15 18:53:42] [KEEPALIVE] Monitorando keep-alive de acessos remotos...
 [2026-05-15 18:55:08] [FIM] Módulo DEEP PACKET encerrado
+[2026-06-02 17:18:38] [INICIO] Módulo DEEP PACKET iniciado para 127.0.0.1
+[2026-06-02 17:18:38] [INICIO] Operação Deep Packet iniciada
+[2026-06-02 17:18:38] [TTL] Iniciando Análise de Saltos (TTL Fingerprinting)...
+[2026-06-02 17:18:38] [ERRO] Erro na análise TTL: [Errno 2] No such file or directory: 'traceroute'
+[2026-06-02 17:18:38] [NMAP] Executando TCP ACK Scan para mapear portas filtradas pelo NAT...
+[2026-06-02 17:18:38] [ERRO] Erro no TCP ACK Scan: [Errno 2] No such file or directory: 'nmap'
+[2026-06-02 17:18:38] [IP_ID] Analisando IP ID para confirmar Double NAT...
+[2026-06-02 17:18:38] [TSHARK] Monitorando assinaturas de túneis (MPLS/GRE/AnyDesk/RDP)...
+[2026-06-02 17:18:38] [KEEPALIVE] Monitorando keep-alive de acessos remotos...
+[2026-06-02 17:18:38] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:18:38] [ERRO] Erro no TShark: [Errno 2] No such file or directory: 'tshark'
+[2026-06-02 17:18:38] [FALLBACK] Usando monitoramento passivo fallback...
+[2026-06-02 17:18:38] [TLS_ENTROPY] Iniciando análise de entropia TLS na porta 443
+[2026-06-02 17:18:38] [TLS_ENTROPY] Erro: [Errno 2] No such file or directory: 'tshark'
+[2026-06-02 17:19:08] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:19:38] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:20:08] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:20:09] [FIM] Módulo DEEP PACKET encerrado
+[2026-06-02 17:20:34] [INICIO] Módulo DEEP PACKET iniciado para 127.0.0.1
+[2026-06-02 17:20:34] [INICIO] Operação Deep Packet iniciada
+[2026-06-02 17:20:34] [TTL] Iniciando Análise de Saltos (TTL Fingerprinting)...
+[2026-06-02 17:20:34] [ERRO] Erro na análise TTL: [Errno 2] No such file or directory: 'traceroute'
+[2026-06-02 17:20:34] [NMAP] Executando TCP ACK Scan para mapear portas filtradas pelo NAT...
+[2026-06-02 17:20:34] [ERRO] Erro no TCP ACK Scan: [Errno 2] No such file or directory: 'nmap'
+[2026-06-02 17:20:34] [IP_ID] Analisando IP ID para confirmar Double NAT...
+[2026-06-02 17:20:34] [TSHARK] Monitorando assinaturas de túneis (MPLS/GRE/AnyDesk/RDP)...
+[2026-06-02 17:20:34] [KEEPALIVE] Monitorando keep-alive de acessos remotos...
+[2026-06-02 17:20:34] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:20:34] [ERRO] Erro no TShark: [Errno 2] No such file or directory: 'tshark'
+[2026-06-02 17:20:34] [FALLBACK] Usando monitoramento passivo fallback...
+[2026-06-02 17:20:35] [TLS_ENTROPY] Iniciando análise de entropia TLS na porta 443
+[2026-06-02 17:20:35] [TLS_ENTROPY] Erro: [Errno 2] No such file or directory: 'tshark'
+[2026-06-02 17:21:04] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:21:34] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:22:04] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:22:18] [FIM] Módulo DEEP PACKET encerrado
+[2026-06-02 17:22:21] [INICIO] Módulo DEEP PACKET iniciado para 138.122.82.214
+[2026-06-02 17:22:21] [INICIO] Operação Deep Packet iniciada
+[2026-06-02 17:22:21] [TTL] Iniciando Análise de Saltos (TTL Fingerprinting)...
+[2026-06-02 17:22:21] [ERRO] Erro na análise TTL: [Errno 2] No such file or directory: 'traceroute'
+[2026-06-02 17:22:21] [NMAP] Executando TCP ACK Scan para mapear portas filtradas pelo NAT...
+[2026-06-02 17:22:21] [ERRO] Erro no TCP ACK Scan: [Errno 2] No such file or directory: 'nmap'
+[2026-06-02 17:22:21] [IP_ID] Analisando IP ID para confirmar Double NAT...
+[2026-06-02 17:22:21] [TSHARK] Monitorando assinaturas de túneis (MPLS/GRE/AnyDesk/RDP)...
+[2026-06-02 17:22:21] [KEEPALIVE] Monitorando keep-alive de acessos remotos...
+[2026-06-02 17:22:21] [ERRO] Erro no TShark: [Errno 2] No such file or directory: 'tshark'
+[2026-06-02 17:22:21] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:22:21] [FALLBACK] Usando monitoramento passivo fallback...
+[2026-06-02 17:22:24] [TLS_ENTROPY] Iniciando análise de entropia TLS na porta 443
+[2026-06-02 17:22:24] [TLS_ENTROPY] Erro: [Errno 2] No such file or directory: 'tshark'
+[2026-06-02 17:22:51] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:23:21] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:23:51] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:24:21] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:24:51] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:25:21] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:25:51] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:26:21] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:26:51] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:27:21] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:27:51] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:28:21] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:28:51] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:29:21] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:29:51] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:30:21] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:30:34] [RELATORIO] Relatório completo gerado: 0 túneis detectados
+[2026-06-02 17:30:51] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:31:21] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:31:51] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 17:32:21] [RELATORIO] Relatório completo gerado: 0 túneis detectados
+[2026-06-02 20:22:25] [FIM] Módulo DEEP PACKET encerrado
+[2026-06-02 20:22:28] [INICIO] Módulo DEEP PACKET iniciado para 138.122.82.214
+[2026-06-02 20:22:28] [INICIO] Operação Deep Packet iniciada
+[2026-06-02 20:22:28] [TTL] Iniciando Análise de Saltos (TTL Fingerprinting)...
+[2026-06-02 20:22:28] [ERRO] Erro na análise TTL: [Errno 2] No such file or directory: 'traceroute'
+[2026-06-02 20:22:28] [NMAP] Executando TCP ACK Scan para mapear portas filtradas pelo NAT...
+[2026-06-02 20:22:28] [ERRO] Erro no TCP ACK Scan: [Errno 2] No such file or directory: 'nmap'
+[2026-06-02 20:22:28] [IP_ID] Analisando IP ID para confirmar Double NAT...
+[2026-06-02 20:22:28] [TSHARK] Monitorando assinaturas de túneis (MPLS/GRE/AnyDesk/RDP)...
+[2026-06-02 20:22:28] [KEEPALIVE] Monitorando keep-alive de acessos remotos...
+[2026-06-02 20:22:28] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:22:28] [ERRO] Erro no TShark: [Errno 2] No such file or directory: 'tshark'
+[2026-06-02 20:22:28] [FALLBACK] Usando monitoramento passivo fallback...
+[2026-06-02 20:22:31] [TLS_ENTROPY] Iniciando análise de entropia TLS na porta 443
+[2026-06-02 20:22:31] [TLS_ENTROPY] Erro: [Errno 2] No such file or directory: 'tshark'
+[2026-06-02 20:22:58] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:23:28] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:23:58] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:24:28] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:24:58] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:25:28] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:25:58] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:26:28] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:26:58] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:27:28] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:27:58] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:28:28] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:28:58] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:29:28] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:29:58] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:30:28] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:30:58] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:31:28] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:31:58] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-02 20:32:28] [RELATORIO] Relatório completo gerado: 0 túneis detectados
+[2026-06-02 22:51:32] [FIM] Módulo DEEP PACKET encerrado
+[2026-06-04 14:51:26] [INICIO] Módulo DEEP PACKET iniciado para 138.122.82.214
+[2026-06-04 14:51:26] [INICIO] Operação Deep Packet iniciada
+[2026-06-04 14:51:26] [TTL] Iniciando Análise de Saltos (TTL Fingerprinting)...
+[2026-06-04 14:51:26] [ERRO] Erro na análise TTL: [Errno 2] No such file or directory: 'traceroute'
+[2026-06-04 14:51:26] [NMAP] Executando TCP ACK Scan para mapear portas filtradas pelo NAT...
+[2026-06-04 14:51:26] [ERRO] Erro no TCP ACK Scan: [Errno 2] No such file or directory: 'nmap'
+[2026-06-04 14:51:26] [IP_ID] Analisando IP ID para confirmar Double NAT...
+[2026-06-04 14:51:26] [TSHARK] Monitorando assinaturas de túneis (MPLS/GRE/AnyDesk/RDP)...
+[2026-06-04 14:51:26] [KEEPALIVE] Monitorando keep-alive de acessos remotos...
+[2026-06-04 14:51:26] [ERRO] Erro no TShark: [Errno 2] No such file or directory: 'tshark'
+[2026-06-04 14:51:26] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 14:51:26] [FALLBACK] Usando monitoramento passivo fallback...
+[2026-06-04 14:51:29] [TLS_ENTROPY] Iniciando análise de entropia TLS na porta 443
+[2026-06-04 14:51:29] [TLS_ENTROPY] Erro: [Errno 2] No such file or directory: 'tshark'
+[2026-06-04 14:51:56] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 14:52:26] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 14:52:56] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 14:53:26] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 14:53:56] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 14:54:26] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 14:54:56] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 14:55:26] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 14:55:43] [FIM] Módulo DEEP PACKET encerrado
+[2026-06-04 15:43:19] [INICIO] Módulo DEEP PACKET iniciado para 138.122.82.214
+[2026-06-04 15:43:19] [INICIO] Operação Deep Packet iniciada
+[2026-06-04 15:43:19] [TTL] Iniciando Análise de Saltos (TTL Fingerprinting)...
+[2026-06-04 15:43:19] [ERRO] Erro na análise TTL: [Errno 2] No such file or directory: 'traceroute'
+[2026-06-04 15:43:19] [NMAP] Executando TCP ACK Scan para mapear portas filtradas pelo NAT...
+[2026-06-04 15:43:19] [ERRO] Erro no TCP ACK Scan: [Errno 2] No such file or directory: 'nmap'
+[2026-06-04 15:43:19] [IP_ID] Analisando IP ID para confirmar Double NAT...
+[2026-06-04 15:43:19] [TSHARK] Monitorando assinaturas de túneis (MPLS/GRE/AnyDesk/RDP)...
+[2026-06-04 15:43:19] [KEEPALIVE] Monitorando keep-alive de acessos remotos...
+[2026-06-04 15:43:19] [ERRO] Erro no TShark: [Errno 2] No such file or directory: 'tshark'
+[2026-06-04 15:43:19] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:43:19] [FALLBACK] Usando monitoramento passivo fallback...
+[2026-06-04 15:43:22] [TLS_ENTROPY] Iniciando análise de entropia TLS na porta 443
+[2026-06-04 15:43:22] [TLS_ENTROPY] Erro: [Errno 2] No such file or directory: 'tshark'
+[2026-06-04 15:43:49] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:44:19] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:44:49] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:45:19] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:45:49] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:46:19] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:46:49] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:47:19] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:47:49] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:48:19] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:48:49] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:49:19] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:49:49] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:50:19] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:50:49] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:51:19] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:51:49] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:52:19] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:52:49] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 15:53:19] [RELATORIO] Relatório completo gerado: 0 túneis detectados
+[2026-06-04 20:32:24] [FIM] Módulo DEEP PACKET encerrado
+[2026-06-04 20:32:27] [INICIO] Módulo DEEP PACKET iniciado para 138.122.82.214
+[2026-06-04 20:32:27] [INICIO] Operação Deep Packet iniciada
+[2026-06-04 20:32:27] [TTL] Iniciando Análise de Saltos (TTL Fingerprinting)...
+[2026-06-04 20:32:27] [ERRO] Erro na análise TTL: [Errno 2] No such file or directory: 'traceroute'
+[2026-06-04 20:32:27] [NMAP] Executando TCP ACK Scan para mapear portas filtradas pelo NAT...
+[2026-06-04 20:32:27] [ERRO] Erro no TCP ACK Scan: [Errno 2] No such file or directory: 'nmap'
+[2026-06-04 20:32:27] [IP_ID] Analisando IP ID para confirmar Double NAT...
+[2026-06-04 20:32:27] [TSHARK] Monitorando assinaturas de túneis (MPLS/GRE/AnyDesk/RDP)...
+[2026-06-04 20:32:27] [KEEPALIVE] Monitorando keep-alive de acessos remotos...
+[2026-06-04 20:32:27] [ERRO] Erro no TShark: [Errno 2] No such file or directory: 'tshark'
+[2026-06-04 20:32:27] [FALLBACK] Usando monitoramento passivo fallback...
+[2026-06-04 20:32:27] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:32:30] [TLS_ENTROPY] Iniciando análise de entropia TLS na porta 443
+[2026-06-04 20:32:30] [TLS_ENTROPY] Erro: [Errno 2] No such file or directory: 'tshark'
+[2026-06-04 20:32:57] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:33:27] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:33:57] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:34:27] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:34:57] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:35:27] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:35:57] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:36:27] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:36:57] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:37:27] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:37:57] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:38:27] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:38:57] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:39:27] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:39:57] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:40:27] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:40:57] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:41:27] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:41:57] [ERRO] Erro no monitoramento keep-alive: [Errno 2] No such file or directory: 'netstat'
+[2026-06-04 20:42:27] [RELATORIO] Relatório completo gerado: 0 túneis detectados

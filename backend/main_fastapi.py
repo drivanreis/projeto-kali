@@ -17,8 +17,11 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import psutil
+from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy import func
 
 # Adiciona diretórios ao path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'core'))
@@ -28,11 +31,18 @@ from recon import ReconModule
 from monitor import MonitorModule
 from deep_packet import DeepPacketModule
 from arsenal import ArsenalModule
-from models import DatabaseManager, AttackHistory
+from models import DatabaseManager, AttackHistory, Cliente, create_engine_from_env, init_db
 from engine import EngineInferencia
 
 # Inicializa FastAPI
 app = FastAPI(title="KALI-CORE API", version="1.0.0")
+
+# Monta arquivos estáticos para a página pública do RH
+app.mount("/audit", StaticFiles(directory="static/audit", html=True), name="audit")
+
+# ==================== INICIALIZAÇÃO DE BANCO DE DADOS ====================
+# Cria todas as tabelas no banco (idempotente - seguro rodar sempre)
+init_db()
 
 # ==================== CORS MIDDLEWARE ====================
 app.add_middleware(
@@ -143,6 +153,34 @@ class AttackData(BaseModel):
     error_message: str = None
     lesson_learned: str = None
     confidence_score: float = 0.5
+
+class OsintData(BaseModel):
+    subdominios_expostos: List[str] = []
+    emails_vazados: List[str] = []
+    portas_abertas_criticas: List[int] = []
+    dns_sec_habilitado: bool = False
+    ssl_valido: bool = True
+
+class ClienteCadastro(BaseModel):
+    nome_cliente: str
+    dominio_principal: str
+    ips_autorizados: List[str] = []
+    dados_osint: OsintData = None
+
+class ClienteCreate(BaseModel):
+    """Schema para criar novo cliente"""
+    nome_cliente: str
+    ip: str
+
+class ClienteResponse(BaseModel):
+    """Schema para retornar cliente"""
+    id: int
+    nome_cliente: str
+    ip: str
+    criado_em: str = None
+    
+    class Config:
+        from_attributes = True
 
 # Conexões WebSocket
 class ConnectionManager:
@@ -612,12 +650,12 @@ async def injecao_sutil(tipo: str, caminho: str):
 
 @app.post("/api/start")
 async def iniciar_operacao(request: dict):
-    """Inicia operação com alvo dinâmico e cria registros reais no banco de dados"""
+    """Inicia operação com cliente dinâmico e cria registros reais no banco de dados"""
     global orchestrator
     
     target = request.get("target")
     if not target:
-        return {"sucesso": False, "erro": "Alvo não fornecido"}
+        return {"sucesso": False, "erro": "Cliente não fornecido"}
     
     try:
         # Se já existe um orquestrador, encerra o anterior
@@ -627,7 +665,7 @@ async def iniciar_operacao(request: dict):
         
         # === CRIAR REGISTROS REAIS NO BANCO DE DADOS ===
         
-        # 1. Salva o alvo no banco
+        # 1. Salva o cliente no banco
         alvo_id = db_manager.save_alvo(target)
         
         # 2. Cria operações de teste para simular ataques reais
@@ -650,7 +688,7 @@ async def iniciar_operacao(request: dict):
             operacao_id=op1_id,
             criticidade='critica',
             titulo='SQL Injection em formulário de login',
-            descricao=f'Formulário de login do alvo {target} é vulnerável a SQL Injection via parâmetro "user".',
+            descricao=f'Formulário de login do cliente {target} é vulnerável a SQL Injection via parâmetro "user".',
             correcao='1. Implementar prepared statements\n2. Validar entrada de usuário\n3. Usar ORM para queries'
         )
         db_manager.save_vulnerabilidade(
@@ -699,7 +737,7 @@ async def iniciar_operacao(request: dict):
             operacao_id=op3_id,
             criticidade='alta',
             titulo='Arquivo .env exposto publicamente',
-            descricao=f'Arquivo de configuração .env com credenciais foi encontrado em /.env no alvo {target}.',
+            descricao=f'Arquivo de configuração .env com credenciais foi encontrado em /.env no cliente {target}.',
             correcao='1. Remover arquivos sensíveis do webroot\n2. Usar .gitignore\n3. Mover para variáveis de ambiente'
         )
         db_manager.save_vulnerabilidade(
@@ -710,7 +748,7 @@ async def iniciar_operacao(request: dict):
             correcao='1. Implementar autenticação\n2. Restringir por IP\n3. Usar WAF'
         )
         
-        # 3. Cria novo orquestrador com o alvo dinâmico
+        # 3. Cria novo orquestrador com o cliente dinâmico
         orchestrator = KaliCoreOrchestrator(target=target)
         
         # Inicia orquestrador em thread separada
@@ -801,6 +839,244 @@ async def export_training_dataset():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao exportar dataset: {str(e)}")
 
+# ==================== ENDPOINTS DE INVENTÁRIO DE ATIVOS (BLUE TEAM) ====================
+
+@app.get("/api/v1/assets/download/powershell")
+async def download_powershell_script():
+    """
+    Gera script PowerShell dinâmico com variáveis injetadas
+    """
+    try:
+        # Lê o script base
+        script_path = os.path.join(os.path.dirname(__file__), "asset_audit_base.ps1")
+        with open(script_path, "r", encoding="utf-8") as f:
+            script_content = f.read()
+        
+        # Obtém IP do servidor
+        server_ip = f"{os.getenv('SERVER_IP', '127.0.0.1')}:{os.getenv('SERVER_PORT', '8888')}"
+        
+        # Injeta variável dinamicamente
+        script_content = script_content.replace("{{SERVER_IP}}", server_ip)
+        
+        # Retorna como download
+        from fastapi.responses import Response
+        return Response(
+            content=script_content,
+            media_type="text/plain",
+            headers={
+                "Content-Disposition": "attachment; filename=asset_audit.ps1"
+            }
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao gerar script: {str(e)}")
+
+@app.post("/api/v1/assets/upload")
+async def upload_asset_data(data: dict):
+    """
+    Recebe dados de auditoria do PowerShell e repassa para backend-admin via rede interna
+    """
+    try:
+        # Valida formato
+        if not data.get("hardware") or not data.get("network"):
+            return {"success": False, "error": "Formato inválido"}
+        
+        # Repassa payload para backend-admin via rede interna Docker
+        backend_admin_url = os.getenv("BACKEND_ADMIN_INTERNAL_URL", "http://backend-admin:5190")
+        internal_endpoint = f"{backend_admin_url}/api/v1/internal/assets/upload"
+        
+        try:
+            import requests
+            response = requests.post(internal_endpoint, json=data, timeout=10)
+            
+            if response.status_code == 200:
+                result = response.json()
+                return result
+            else:
+                return {"success": False, "error": f"Erro ao repassar para backend-admin: {response.status_code}"}
+        except Exception as e:
+            # Fallback: salva localmente em caso de falha de comunicação
+            inventory_file = f"data/inventory/audit_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            os.makedirs(os.path.dirname(inventory_file), exist_ok=True)
+            
+            with open(inventory_file, 'w') as f:
+                json.dump({
+                    "data": data,
+                    "timestamp": datetime.now().isoformat()
+                }, f, indent=2)
+            
+            return {
+                "success": True,
+                "message": "Dados recebidos e salvos localmente (fallback)"
+            }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+@app.get("/api/v1/assets/{cliente_slug}")
+async def get_assets(cliente_slug: str):
+    """
+    Retorna ativos recebidos para um cliente específico
+    """
+    try:
+        inventory_dir = "data/inventory"
+        if not os.path.exists(inventory_dir):
+            return {"success": True, "ativos": []}
+        
+        ativos = []
+        for filename in os.listdir(inventory_dir):
+            if filename.startswith(f"audit_{cliente_slug}_") and filename.endswith(".json"):
+                filepath = os.path.join(inventory_dir, filename)
+                with open(filepath, 'r') as f:
+                    data = json.load(f)
+                    hardware = data.get("data", {}).get("hardware", {})
+                    network = data.get("data", {}).get("network", {})
+                    neighbors = data.get("data", {}).get("neighbors", [])
+                    
+                    # Detecta dispositivos não homologados (alerta)
+                    alerta = len(neighbors) > 0
+                    
+                    ativos.append({
+                        "computer_name": hardware.get("computer_name", "Desconhecido"),
+                        "username": hardware.get("username", "Desconhecido"),
+                        "ip_address": network.get("ip_address", "Desconhecido"),
+                        "mac_address": network.get("mac_address", "Desconhecido"),
+                        "neighbors": [n.get("ip") for n in neighbors],
+                        "alerta": alerta,
+                        "timestamp": filename.split("_")[-1].replace(".json", "")
+                    })
+        
+        return {"success": True, "ativos": ativos}
+    except Exception as e:
+        return {"success": False, "error": str(e), "ativos": []}
+
+@app.get("/api/v1/assets/all")
+async def get_all_assets():
+    """
+    Retorna todos os ativos recebidos (para painel administrativo sem seleção de cliente)
+    """
+    try:
+        inventory_dir = "data/inventory"
+        if not os.path.exists(inventory_dir):
+            return {"success": True, "ativos": []}
+        
+        ativos = []
+        for filename in os.listdir(inventory_dir):
+            if filename.startswith("audit_") and filename.endswith(".json"):
+                filepath = os.path.join(inventory_dir, filename)
+                with open(filepath, 'r') as f:
+                    data = json.load(f)
+                    hardware = data.get("data", {}).get("hardware", {})
+                    network = data.get("data", {}).get("network", {})
+                    neighbors = data.get("data", {}).get("neighbors", {})
+                    
+                    # Detecta dispositivos não homologados (alerta)
+                    alerta = len(neighbors) > 0
+                    
+                    ativos.append({
+                        "computer_name": hardware.get("computer_name", "Desconhecido"),
+                        "username": hardware.get("username", "Desconhecido"),
+                        "ip_address": network.get("ip_address", "Desconhecido"),
+                        "mac_address": network.get("mac_address", "Desconhecido"),
+                        "neighbors": [n.get("ip") for n in neighbors],
+                        "alerta": alerta,
+                        "timestamp": filename.split("_")[-1].replace(".json", "")
+                    })
+        
+        return {"success": True, "ativos": ativos}
+    except Exception as e:
+        return {"success": False, "error": str(e), "ativos": []}
+
+@app.post("/api/v1/internal/assets/upload")
+async def internal_upload_asset_data(data: dict):
+    """
+    Endpoint interno para receber dados de auditoria do coletor público
+    Este endpoint é acessível apenas via rede interna Docker
+    """
+    try:
+        # Valida formato
+        if not data.get("hardware") or not data.get("network"):
+            return {"success": False, "error": "Formato inválido"}
+        
+        # Salva dados de inventário
+        inventory_file = f"data/inventory/audit_internal_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        os.makedirs(os.path.dirname(inventory_file), exist_ok=True)
+        
+        with open(inventory_file, 'w') as f:
+            json.dump({
+                "data": data,
+                "timestamp": datetime.now().isoformat()
+            }, f, indent=2)
+        
+        return {
+            "success": True,
+            "message": "Dados recebidos e salvos com sucesso"
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+class InventoryData(BaseModel):
+    """Schema para receber dados de inventário de ativos"""
+    cliente_id: str
+    network_info: str
+    arp_table: str
+    system_info: str
+    software_list: str = None
+
+@app.post("/api/inventory")
+async def save_inventory(inventory_data: InventoryData):
+    """
+    Recebe dados de inventário de ativos coletados pelo script local
+    e processa para gerar topologia de rede e laudo de endurecimento
+    """
+    try:
+        # Salva dados brutos no banco
+        inventory_dict = inventory_data.dict()
+        
+        # TODO: Implementar processamento para:
+        # 1. Gerar topologia de rede baseada em network_info e arp_table
+        # 2. Identificar máquinas desconhecidas na rede
+        # 3. Gerar laudo de endurecimento (hardening)
+        # 4. Alertar blue team sobre softwares obsoletos
+        
+        # Por enquanto, salva em arquivo para processamento futuro
+        inventory_file = f"data/inventory/inventory_{inventory_data.cliente_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        os.makedirs(os.path.dirname(inventory_file), exist_ok=True)
+        
+        with open(inventory_file, 'w') as f:
+            json.dump(inventory_dict, f, indent=2)
+        
+        return {
+            "sucesso": True,
+            "mensagem": "Inventário recebido e salvo com sucesso",
+            "arquivo": inventory_file,
+            "cliente_id": inventory_data.cliente_id
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao salvar inventário: {str(e)}")
+
+@app.get("/api/inventory/{cliente_id}")
+async def get_inventory(cliente_id: str):
+    """Retorna inventários de um cliente específico"""
+    try:
+        inventory_dir = "data/inventory"
+        if not os.path.exists(inventory_dir):
+            return {"sucesso": True, "inventarios": []}
+        
+        inventarios = []
+        for filename in os.listdir(inventory_dir):
+            if filename.startswith(f"inventory_{cliente_id}_") and filename.endswith(".json"):
+                filepath = os.path.join(inventory_dir, filename)
+                with open(filepath, 'r') as f:
+                    data = json.load(f)
+                    inventarios.append({
+                        "arquivo": filename,
+                        "timestamp": filename.split("_")[-1].replace(".json", ""),
+                        "dados": data
+                    })
+        
+        return {"sucesso": True, "inventarios": inventarios}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao recuperar inventários: {str(e)}")
+
 # ==================== ENDPOINTS DE AUDITORIA AVANÇADA ====================
 
 @app.get("/api/targets")
@@ -823,7 +1099,7 @@ async def get_attack_types():
 
 @app.get("/api/vulnerabilidades")
 async def get_vulnerabilidades(alvo_ip: str = None, attack_type: str = None):
-    """Retorna lista de vulnerabilidades filtradas por alvo e tipo de ataque"""
+    """Retorna lista de vulnerabilidades filtradas por cliente e tipo de ataque"""
     try:
         vulns = db_manager.get_vulnerabilidades_filtradas(alvo_ip=alvo_ip, attack_type=attack_type)
         return {"sucesso": True, "vulnerabilidades": vulns}
@@ -1071,7 +1347,7 @@ async def obter_status_alerta(target_ip: str):
         # Calcula nível de alerta
         nivel_alerta = engine.calcular_nivel_alerta(target_ip)
         
-        # Recupera histórico de ataques para o alvo
+        # Recupera histórico de ataques para o cliente
         history = db_manager.session.query(AttackHistory).filter(
             AttackHistory.target_ip == target_ip
         ).order_by(AttackHistory.timestamp.desc()).limit(20).all()
@@ -1177,6 +1453,186 @@ async def obter_historico_reacoes(target_ip: str, limit: int = 50):
         raise HTTPException(
             status_code=500,
             detail=f"Erro ao recuperar histórico de reações: {str(e)}"
+        )
+
+# ==================== ROTAS DE CLIENTES ====================
+
+@app.post("/api/clientes", response_model=ClienteResponse)
+async def criar_cliente(cliente: ClienteCreate):
+    """
+    Criar novo cliente no banco de dados PostgreSQL
+    
+    Recebe:
+    - nome_cliente: Nome do cliente
+    - ip: IP do cliente
+    """
+    try:
+        # Cria factory de sessão
+        engine = create_engine_from_env()
+        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+        db: Session = SessionLocal()
+        
+        # Cria instância do modelo Cliente
+        novo_cliente = Cliente(
+            nome_cliente=cliente.nome_cliente,
+            ip=cliente.ip
+        )
+        
+        # Adiciona à sessão
+        db.add(novo_cliente)
+        
+        # Commit físico
+        db.commit()
+        
+        # Refresh para obter o ID gerado
+        db.refresh(novo_cliente)
+        
+        # Formata resposta
+        resposta = {
+            "id": novo_cliente.id,
+            "nome_cliente": novo_cliente.nome_cliente,
+            "ip": novo_cliente.ip,
+            "criado_em": novo_cliente.criado_em.isoformat() if novo_cliente.criado_em else None
+        }
+        
+        db.close()
+        return resposta
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro ao criar cliente: {str(e)}"
+        )
+
+
+@app.get("/api/clientes")
+async def listar_clientes():
+    """
+    Listar todos os clientes salvos no banco de dados PostgreSQL
+    """
+    try:
+        # Cria factory de sessão
+        engine = create_engine_from_env()
+        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+        db: Session = SessionLocal()
+        
+        # Select de todos os clientes ordenado por ID
+        clientes = db.query(Cliente).order_by(Cliente.id).all()
+        
+        # Formata resposta
+        resposta = []
+        for cliente in clientes:
+            resposta.append({
+                "id": cliente.id,
+                "nome_cliente": cliente.nome_cliente,
+                "ip": cliente.ip,
+                "criado_em": cliente.criado_em.isoformat() if cliente.criado_em else None
+            })
+        
+        db.close()
+        return {
+            "sucesso": True,
+            "total": len(resposta),
+            "clientes": resposta,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro ao listar clientes: {str(e)}"
+        )
+
+
+@app.put("/api/clientes/{cliente_id}", response_model=ClienteResponse)
+async def atualizar_cliente(cliente_id: int, cliente: ClienteCreate):
+    """
+    Atualizar um cliente existente pelo ID
+    """
+    try:
+        # Cria factory de sessão
+        engine = create_engine_from_env()
+        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+        db: Session = SessionLocal()
+        
+        # Busca cliente
+        db_cliente = db.query(Cliente).filter(Cliente.id == cliente_id).first()
+        
+        if not db_cliente:
+            db.close()
+            raise HTTPException(
+                status_code=404,
+                detail=f"Cliente com ID {cliente_id} não encontrado"
+            )
+            
+        # Atualiza campos
+        db_cliente.nome_cliente = cliente.nome_cliente
+        db_cliente.ip = cliente.ip
+        
+        # Commit
+        db.commit()
+        db.refresh(db_cliente)
+        
+        # Formata resposta
+        resposta = {
+            "id": db_cliente.id,
+            "nome_cliente": db_cliente.nome_cliente,
+            "ip": db_cliente.ip,
+            "criado_em": db_cliente.criado_em.isoformat() if db_cliente.criado_em else None
+        }
+        
+        db.close()
+        return resposta
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro ao atualizar cliente: {str(e)}"
+        )
+
+
+@app.delete("/api/clientes/{cliente_id}")
+async def excluir_cliente(cliente_id: int):
+    """
+    Excluir um cliente pelo ID
+    """
+    try:
+        # Cria factory de sessão
+        engine = create_engine_from_env()
+        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+        db: Session = SessionLocal()
+        
+        # Busca cliente
+        cliente = db.query(Cliente).filter(Cliente.id == cliente_id).first()
+        
+        if not cliente:
+            db.close()
+            raise HTTPException(
+                status_code=404,
+                detail=f"Cliente com ID {cliente_id} não encontrado"
+            )
+        
+        # Remove e commit
+        db.delete(cliente)
+        db.commit()
+        
+        db.close()
+        
+        return {
+            "sucesso": True,
+            "mensagem": f"Cliente '{cliente.nome_cliente}' excluído com sucesso",
+            "cliente_id": cliente_id,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro ao excluir cliente: {str(e)}"
         )
 
 # ==================== INICIALIZAÇÃO ====================

@@ -1,262 +1,60 @@
 version: '3.8'
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# KALI-CORE V3.0 - Production Ready Docker Compose Configuration
-# ═══════════════════════════════════════════════════════════════════════════════
-# Arquitetura: 2 serviços (Backend FastAPI + Frontend React/Vite)
-# Network: bridge isolado (kali-network)
-# Volumes: Persistência (SQLite) + Hot-reload (development)
-# ═══════════════════════════════════════════════════════════════════════════════
+# ========================================================
+# KALI-CORE V3.0 - Topologia de Rede Zero Trust
+# Isolamento de Ambientes de Auditoria
+# ========================================================
 
 services:
-  # ─────────────────────────────────────────────────────────────────────────────
-  # DATABASE SERVICE: PostgreSQL 16
-  # Porta: 5432 (interno apenas, não exposto)
-  # Credenciais: kali / kali
-  # Database: kali_core
-  # ─────────────────────────────────────────────────────────────────────────────
-  kali_postgres:
-    image: postgres:16-alpine
-    container_name: kali-core-postgres
-    hostname: kali_postgres
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # ENVIRONMENT: Configurações de banco de dados
-    # ───────────────────────────────────────────────────────────────────────────
-    environment:
-      # Credenciais PostgreSQL
-      POSTGRES_USER: kali
-      POSTGRES_PASSWORD: kali
-      POSTGRES_DB: kali_core
-      
-      # Timezone
-      TZ: America/Fortaleza
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # PORTS: Porta 5432 apenas internamente (não expor em produção)
-    # ───────────────────────────────────────────────────────────────────────────
-    ports:
-      - "5432:5432"
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # VOLUMES: Persistência de dados PostgreSQL
-    # ───────────────────────────────────────────────────────────────────────────
-    volumes:
-      # Volume nomeado para dados (mais seguro que bind mount)
-      - postgres_data:/var/lib/postgresql/data
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # NETWORKS: Isolado em kali-network bridge
-    # ───────────────────────────────────────────────────────────────────────────
-    networks:
-      - kali-network
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # HEALTHCHECK: Valida conexão PostgreSQL
-    # ───────────────────────────────────────────────────────────────────────────
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U kali -d kali_core"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # RESTART: Auto-restart em caso de falha
-    # ───────────────────────────────────────────────────────────────────────────
-    restart: unless-stopped
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # LOGGING: Configuração de logs
-    # ───────────────────────────────────────────────────────────────────────────
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-  # ─────────────────────────────────────────────────────────────────────────────
-  # BACKEND SERVICE: FastAPI + Python 3.11-slim
-  # Porta: 8001
-  # Healthcheck: GET /api/targets
-  # Dependência: kali_postgres (service_healthy)
-  # ─────────────────────────────────────────────────────────────────────────────
-  kali_backend:
+  # ========================================================
+  # ECOSSISTEMA ADMINISTRATIVO (BLOQUEADO NO HOST LOCAL)
+  # ========================================================
+  backend-admin:
     build:
-      context: .
-      dockerfile: backend/Dockerfile
-    container_name: kali-core-backend
-    hostname: kali-backend
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # PORTS: Porta 8001 para API FastAPI
-    # ───────────────────────────────────────────────────────────────────────────
-    ports:
-      - "8001:8001"
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # ENVIRONMENT: Configurações de runtime
-    # ───────────────────────────────────────────────────────────────────────────
-    environment:
-      # Timezone (sincronizar com frontend)
-      TZ: America/Fortaleza
-      
-      # Python configuration (não escrever bytecode)
-      PYTHONUNBUFFERED: 1
-      PYTHONDONTWRITEBYTECODE: 1
-      
-      # Database (PostgreSQL na rede kali-network)
-      DATABASE_URL: postgresql://kali:kali@kali_postgres:5432/kali_core
-      
-      # Application environment
-      ENVIRONMENT: development
-      DEBUG: "True"
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # VOLUMES: Código + Data persistence
-    # ───────────────────────────────────────────────────────────────────────────
+      context: ./backend
+      dockerfile: Dockerfile.admin
     volumes:
-      # Código-fonte do backend (mounted para desenvolvimento/reload)
-      - ./backend:/app
-      
-      # Diretório de data (para backups, temporários, etc)
-      - ./backend/data:/app/data
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # NETWORKS: Isolado em kali-network bridge
-    # ───────────────────────────────────────────────────────────────────────────
+      - ./backend/backend/data:/app/backend/data
+      - ./backend/data/reports:/app/data/reports
+    # AMARRAÇÃO ESTRITA NO LOCALHOST (127.0.0.1): Bloqueia qualquer acesso externo da rede física
+    ports:
+      - "127.0.0.1:5190:5190"
     networks:
-      - kali-network
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # DEPENDS_ON: Backend aguarda PostgreSQL estar healthy
-    # ───────────────────────────────────────────────────────────────────────────
-    depends_on:
-      kali_postgres:
-        condition: service_healthy
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # HEALTHCHECK: Valida disponibilidade do backend
-    # Frequency: a cada 30s, timeout 10s, 3 retries
-    # ───────────────────────────────────────────────────────────────────────────
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001/api/targets"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 5s
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # RESTART: Auto-restart em caso de falha (exceto se parado manualmente)
-    # ───────────────────────────────────────────────────────────────────────────
-    restart: unless-stopped
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # LOGGING: Configuração de logs
-    # ───────────────────────────────────────────────────────────────────────────
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+      - rede-privada-auditoria
+    restart: always
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # FRONTEND SERVICE: Vite + React + TypeScript
-  # Porta: 5190
-  # Hot-reload: Habilitado (volumes de source)
-  # Dependência: kali_backend (service_healthy)
-  # ─────────────────────────────────────────────────────────────────────────────
-  kali_frontend:
+  frontend-admin:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
-    container_name: kali-core-frontend
-    hostname: kali-frontend
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # PORTS: Porta 5190 para Vite dev server
-    # ───────────────────────────────────────────────────────────────────────────
+      dockerfile: Dockerfile.admin
+    # AMARRAÇÃO ESTRITA NO LOCALHOST: Interface do painel acessível apenas na máquina do auditor
     ports:
-      - "5190:5190"
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # ENVIRONMENT: Configurações de runtime
-    # ───────────────────────────────────────────────────────────────────────────
-    environment:
-      # API Configuration (apontar para backend dentro do Docker)
-      VITE_API_URL: http://localhost:8001
-      VITE_API_BASE: /api
-      
-      # Node environment
-      NODE_ENV: development
-      
-      # Timezone (sincronizar com backend)
-      TZ: America/Fortaleza
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # VOLUMES: Source code + Hot-reload + Named volume para performance
-    # ───────────────────────────────────────────────────────────────────────────
-    volumes:
-      # Source code (detecta mudanças via Vite)
-      - ./frontend/src:/app/src
-      
-      # Public assets
-      - ./frontend/public:/app/public
-      
-      # Configuration files (sem hot-reload automático, mas mapped)
-      - ./frontend/index.html:/app/index.html
-      - ./frontend/vite.config.ts:/app/vite.config.ts
-      - ./frontend/tsconfig.json:/app/tsconfig.json
-      - ./frontend/tsconfig.node.json:/app/tsconfig.node.json
-      - ./frontend/tailwind.config.cjs:/app/tailwind.config.cjs
-      - ./frontend/postcss.config.cjs:/app/postcss.config.cjs
-      - ./frontend/.eslintrc.json:/app/.eslintrc.json
-      - ./frontend/package.json:/app/package.json
-      
-      # Anonymous volume para node_modules (melhor performance, evita conflitos)
-      - /app/node_modules
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # NETWORKS: Isolado em kali-network bridge
-    # ───────────────────────────────────────────────────────────────────────────
+      - "127.0.0.1:3000:3000"
     networks:
-      - kali-network
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # DEPENDS_ON: Frontend aguarda backend estar healthy
-    # ───────────────────────────────────────────────────────────────────────────
-    depends_on:
-      kali_backend:
-        condition: service_healthy
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # RESTART: Auto-restart em caso de falha
-    # ───────────────────────────────────────────────────────────────────────────
-    restart: unless-stopped
-    
-    # ───────────────────────────────────────────────────────────────────────────
-    # LOGGING: Configuração de logs
-    # ───────────────────────────────────────────────────────────────────────────
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+      - rede-privada-auditoria
+    restart: always
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# NETWORKS: Isolamento de rede entre containers
-# ═══════════════════════════════════════════════════════════════════════════════
+  # ========================================================
+  # ECOSSISTEMA PORTAL PÚBLICO (EXPOSTO PARA A REDE INTERNA)
+  # ========================================================
+  coletor-publico:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.coletor
+    # EXPOSIÇÃO TOTAL (0.0.0.0): Porta 8888 aberta para as estações clientes realizarem a coleta
+    # Este container serve tanto a página estática /audit quanto os endpoints da API
+    ports:
+      - "0.0.0.0:8888:8888"
+    environment:
+      - BACKEND_ADMIN_INTERNAL_URL=http://backend-admin:5190
+      - SERVER_PORT=8888
+    volumes:
+      - ./backend/static:/app/static
+    networks:
+      - rede-privada-auditoria
+    restart: always
+
 networks:
-  kali-network:
+  rede-privada-auditoria:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# VOLUMES: Persistência de dados
-# ═══════════════════════════════════════════════════════════════════════════════
-volumes:
-  postgres_data:
-    driver: local
 

@@ -54,7 +54,7 @@ Refinamento organizacional e otimização de desempenho do Projeto KALI-CORE, co
   - Estrutura do projeto (main.py, /core, /ui, /data, /archive)
   - Fluxo de execução (threads RECON e MONITOR)
   - Descrição dos módulos (RECON, MONITOR, DEEP PACKET)
-  - Alvo atual: 138.122.82.214
+  - Cliente atual: 138.122.82.214
   - Regra de ouro: atualizar ao mudar arquitetura
 - **Resultado:** Cascade tem referência clara e atualizada do projeto
 
@@ -90,7 +90,7 @@ Refinamento organizacional e otimização de desempenho do Projeto KALI-CORE, co
 ### Automação
 - **Antes:** Deep Packet requeria ativação manual
 - **Depois:** Gatilho automático baseado em detecção
-- **Ganho:** Resposta imediata a sinais do alvo
+- **Ganho:** Resposta imediata a sinais do cliente
 
 ---
 

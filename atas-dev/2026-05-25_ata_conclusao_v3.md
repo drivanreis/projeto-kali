@@ -90,13 +90,13 @@ curl -I http://localhost:5190
 # HTTP/1.1 200 OK
 ```
 
-## 📌 Conceitos Fundamentais - Definição de Alvo (Ativo)
+## 📌 Conceitos Fundamentais - Definição de Cliente (Ativo)
 
-**Nota Importante (30/05/2026):** Criada ata complementar com definição formal de "Alvo" (Ativo).
+**Nota Importante (30/05/2026):** Criada ata complementar com definição formal de "Cliente" (Ativo).
 
 Consultar: `2026-05-30_ata_definicao_alvo_ativo.md`
 
-Um **alvo (ativo)** é qualquer dispositivo, sistema, interface ou infraestrutura capaz de transmitir, receber ou intermediar dados. Inclui todos os meios de comunicação (Wi-Fi, Ethernet, Bluetooth, 4G/5G, satélite, fibra, etc.) e exemplos práticos (computadores, IoT, impressoras, tomadas inteligentes, sensores, etc.).
+Um **cliente (ativo)** é qualquer dispositivo, sistema, interface ou infraestrutura capaz de transmitir, receber ou intermediar dados. Inclui todos os meios de comunicação (Wi-Fi, Ethernet, Bluetooth, 4G/5G, satélite, fibra, etc.) e exemplos práticos (computadores, IoT, impressoras, tomadas inteligentes, sensores, etc.).
 
 **Implicação para KALI-CORE:** Define o escopo de operações do sistema para descoberta, análise e auditoria de segurança.
 
