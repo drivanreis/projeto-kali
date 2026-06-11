@@ -1,19 +1,20 @@
-🛠️ COMANDO IMPERATIVO DE CORREÇÃO: UNIFICAÇÃO DA PORTA 8888 E REMOÇÃO DE SLUGS
-Agente, atenção: O seu resumo de alterações contém erros graves de arquitetura que vão quebrar a aplicação. Corrija imediatamente a fiação do código seguindo estas diretrizes exatas, sem espaço para invenções:
+📋 COMANDO DE REFINAMENTO: COMPLIANCE RESPONSIVO E VETOR DE ATAQUE
+Agente, aplique melhorias estruturais e de dados na Guia 3 (Auditoria / Compliance) seguindo as especificações abaixo:
 
-1. Fim do Conflito na Porta 8888 (Unificação de Containers)
-Você colocou o frontend público e o backend público disputando a mesma porta 8888. Isso vai gerar colisão e derrubar o sistema.
+1. Injeção do Vetor Completo no Laudo (Backend)
+No motor que gera as vulnerabilidades simuladas (no clique do gatilho da operação):
 
-Correção Obrigatória: O container coletor-publico deve rodar apenas o backend FastAPI na porta 8888.
+Não limite o laudo ao IP seco. Modifique a string de descrição da vulnerabilidade para incluir a porta e o caminho/endpoint simulado do serviço afetado.
 
-Configure este backend do FastAPI para servir os arquivos estáticos (HTML/JS/CSS) da página pública do RH (PaginaAuditoriaPublica.tsx) usando FastAPI StaticFiles na rota /audit.
+Exemplo de formato esperado: "Formulário de login do cliente 138.122.82.214:8080/login é vulnerável a SQL Injection via parâmetro 'user'."
 
-Dessa forma, a porta 8888 centralizará tudo: vai servir a página do RH em GET /audit, entregar o script em GET /api/v1/assets/download/powershell e receber os dados em POST /api/v1/assets/upload.
+2. Responsividade Dinâmica e Ocupação de Tela (Frontend / UI)
+No componente de interface da Guia 3:
 
-2. Extinção Definitiva de cliente_slug
-O endpoint de recebimento público NÃO DEVE conter {cliente_slug} na rota. Você manteve um resquício de arquitetura multi-cliente que nós já tínhamos eliminado.
+Ajuste o quadro/caixa [ AUDITORIA DE VULNERABILIDADES ] para que ele ocupe exatamente a altura total disponível da tela, descontando apenas o espaço consumido pela barra de menu de abas superior.
 
-Correção Obrigatória: Altere e trave a rota de upload do coletor para POST /api/v1/assets/upload. O payload enviado pelo PowerShell deve ser um JSON bruto e universal, sem amarras a clientes. O repasse para o backend-admin deve seguir o mesmo padrão limpo.
+Utilize a propriedade de estilo CSS apropriada para travar a altura de forma responsiva (height: calc(100vh - [altura_do_menu]px) ou equivalente em classes utilitárias do projeto).
 
-3. Alinhamento do Script PowerShell (asset_audit_base.ps1)
-Garanta que o script injetado em memória aponte única e exclusivamente para a URL direta: POST http://<IP_DO_SERVIDOR>:8888/api/v1/assets/upload.
+Ative a rolagem interna de texto (overflow-y: auto) apenas para a lista de cards de falhas, garantindo que a borda externa da caixa de Auditoria permaneça estática e perfeitamente alinhada na base da tela.
+
+Mantenha a paleta de cores de laboratório e confirme a aplicação das alterações assim que concluir.

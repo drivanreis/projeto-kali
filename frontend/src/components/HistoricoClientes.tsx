@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8001";
+const API_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5190`;
 
 interface Cliente {
   id: number;
@@ -82,7 +82,7 @@ export const HistoricoClientes: React.FC<HistoricoClientesProps> = ({ refresh })
   return (
     <div className="historico-clientes border border-green-500 p-3 mb-3 bg-black">
       <div className="text-green-400 font-mono font-bold mb-3 text-sm flex justify-between items-center">
-        <span>[ HISTÓRICO DE CLIENTES ]</span>
+        <span>[ CLIENTES CADASTRADOS ]</span>
         <button
           onClick={carregarClientes}
           disabled={carregando}

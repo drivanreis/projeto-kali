@@ -688,14 +688,14 @@ async def iniciar_operacao(request: dict):
             operacao_id=op1_id,
             criticidade='critica',
             titulo='SQL Injection em formulário de login',
-            descricao=f'Formulário de login do cliente {target} é vulnerável a SQL Injection via parâmetro "user".',
+            descricao=f'Formulário de login do cliente {target}:8080/login é vulnerável a SQL Injection via parâmetro "user".',
             correcao='1. Implementar prepared statements\n2. Validar entrada de usuário\n3. Usar ORM para queries'
         )
         db_manager.save_vulnerabilidade(
             operacao_id=op1_id,
             criticidade='alta',
             titulo='XSS Refletido em busca',
-            descricao='Campo de busca reflete input do usuário sem sanitização, permitindo XSS.',
+            descricao=f'Campo de busca em {target}:8080/search reflete input do usuário sem sanitização, permitindo XSS.',
             correcao='1. Escapar caracteres especiais\n2. Usar Content Security Policy\n3. Validar entrada'
         )
         
@@ -716,7 +716,7 @@ async def iniciar_operacao(request: dict):
             operacao_id=op2_id,
             criticidade='media',
             titulo='AXFR Zone Transfer permitido',
-            descricao='Servidor DNS permite zone transfer sem autenticação.',
+            descricao=f'Servidor DNS em {target}:53 permite zone transfer sem autenticação.',
             correcao='1. Desabilitar AXFR em BIND\n2. Usar DNSSEC\n3. Restringir por IP'
         )
         
@@ -737,14 +737,14 @@ async def iniciar_operacao(request: dict):
             operacao_id=op3_id,
             criticidade='alta',
             titulo='Arquivo .env exposto publicamente',
-            descricao=f'Arquivo de configuração .env com credenciais foi encontrado em /.env no cliente {target}.',
+            descricao=f'Arquivo de configuração .env com credenciais foi encontrado em {target}:80/.env no cliente.',
             correcao='1. Remover arquivos sensíveis do webroot\n2. Usar .gitignore\n3. Mover para variáveis de ambiente'
         )
         db_manager.save_vulnerabilidade(
             operacao_id=op3_id,
             criticidade='media',
             titulo='Diretório /admin acessível sem autenticação',
-            descricao='Painel administrativo pode ser acessado sem credenciais válidas.',
+            descricao=f'Painel administrativo em {target}:8080/admin pode ser acessado sem credenciais válidas.',
             correcao='1. Implementar autenticação\n2. Restringir por IP\n3. Usar WAF'
         )
         
@@ -1647,7 +1647,7 @@ def main():
     
     # Inicia servidor Uvicorn
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=5190)
 
 if __name__ == "__main__":
     main()

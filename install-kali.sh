@@ -68,19 +68,21 @@ echo -e "${GREEN}✓ Docker Compose pronto para uso${NC}"
 
 echo ""
 echo -e "${YELLOW}[3/7] Verificando Node.js local para o Frontend...${NC}"
-if ! command -v node &> /dev/null; then
-    echo -e "${YELLOW}⚠️  Node.js não encontrado. Instalando para o ecossistema...${NC}"
+if ! command -v node &> /dev/null || ! command -v npm &> /dev/null; then
+    echo -e "${YELLOW}⚠️  Node.js ou NPM não encontrados. Instalando dependências no Kali...${NC}"
+    sudo apt update -y || true
     sudo apt install -y nodejs npm
 fi
+echo -e "${GREEN}✓ Node.js e NPM prontos para uso${NC}"
 
 echo ""
 echo -e "${YELLOW}[4/7] Instalando pacotes do frontend...${NC}"
 cd frontend
 npm install --quiet
 
-# Criar o arquivo de ambiente .env do frontend
+# Criar o arquivo de ambiente .env do frontend apontando para a nova porta da API admin
 cat > .env << 'EOF'
-VITE_API_URL=http://localhost:8001
+VITE_API_URL=http://localhost:5190
 NODE_ENV=development
 EOF
 echo -e "${GREEN}✓ Frontend configurado (.env gerado)${NC}"
@@ -102,16 +104,19 @@ echo -e "${GREEN}✓ Diretório backend/data persistido${NC}"
 echo ""
 echo -e "${GREEN}"
 echo "=================================================================="
-echo "✅ INFRAESTRUTURA DOCKER CONFIGURADA E HOMOLOGADA!"
+echo "✅ INFRAESTRUTURA CONFIGURADA E HOMOLOGADA NO KALI!"
 echo "=================================================================="
 echo -e "${NC}"
 
 echo -e "${BLUE}📋 PRÓXIMOS PASSOS PARA RODAR O PROJETO AGORA:${NC}"
 echo ""
-echo "   1️⃣  Execute o comando para levantar o container isolado:"
-echo -e "      ${GREEN}docker compose up --build -d${NC}"
+echo "   1️⃣  Execute o script de inicialização para levantar os containers:"
+echo -e "      ${GREEN}./start.sh${NC}"
 echo ""
-echo "   2️⃣  Abra o navegador do seu Kali na interface de bancada:"
-echo -e "      👉 ${GREEN}http://localhost:5190${NC}"
+echo "   2️⃣  Abra o painel do auditor protegido no navegador:"
+echo -e "      👉 ${GREEN}http://localhost:3000${NC}"
+echo ""
+echo "   3️⃣  As máquinas clientes acessarão a portaria do RH em:"
+echo -e "      👉 ${YELLOW}http://<IP_DO_SU_KALI>:8888/audit${NC}"
 echo ""
 echo "=================================================================="

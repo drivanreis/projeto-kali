@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8001";
+const API_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5190`;
 
 interface Cliente {
   id: number;
@@ -258,7 +258,7 @@ export const FormularioCadastroCliente: React.FC<FormularioCadastroClienteProps>
   return (
     <div className="formulario-cadastro-cliente border border-green-500 p-3 mb-3 bg-black">
       <div className="text-green-400 font-mono font-bold mb-3 text-sm flex justify-between items-center">
-        <span>[ CADASTRO DE CLIENTE ]</span>
+        <span>[ NOVO CLIENTE ]</span>
         {selectedId && (
           <span className="text-green-500 text-[10px]">
             [ REGISTRO: {currentIndex !== null ? currentIndex + 1 : "?"} / {clientes.length} ]
@@ -266,40 +266,40 @@ export const FormularioCadastroCliente: React.FC<FormularioCadastroClienteProps>
         )}
       </div>
 
-      {/* Campo Nome do Cliente */}
-      <div className="mb-2 flex items-center gap-4">
-        <label className="text-green-400 font-mono text-xs w-32 shrink-0">
-          NOME DO CLIENTE:
-        </label>
-        <input
-          ref={nomeRef}
-          type="text"
-          value={nomeCliente}
-          onChange={(e) => setNomeCliente(e.target.value)}
-          onFocus={handleNomeFocus}
-          onBlur={handleNomeBlur}
-          placeholder="Digite o nome do cliente"
-          className="flex-1 bg-black border border-green-500 text-green-400 font-mono text-sm p-1.5 focus:outline-none focus:ring-1 focus:ring-green-500 disabled:opacity-50"
-          disabled={carregando}
-        />
-      </div>
-
-      {/* Campo IP */}
-      <div className="mb-3 flex items-center gap-4">
-        <label className="text-green-400 font-mono text-xs w-32 shrink-0">
-          IP DO CLIENTE:
-        </label>
-        <input
-          ref={ipRef}
-          type="text"
-          value={ip}
-          onChange={(e) => setIp(e.target.value)}
-          onFocus={handleIpFocus}
-          onBlur={handleIpBlur}
-          placeholder="192.168.1.1"
-          className="flex-1 bg-black border border-green-500 text-green-400 font-mono text-sm p-1.5 focus:outline-none focus:ring-1 focus:ring-green-500 disabled:opacity-50"
-          disabled={carregando}
-        />
+      {/* Campos Nome e IP - Alinhamento Horizontal */}
+      <div className="mb-3 flex flex-row items-center gap-4">
+        <div className="flex items-center gap-4 flex-1">
+          <label className="text-green-400 font-mono text-xs w-32 shrink-0">
+            NOME DO CLIENTE:
+          </label>
+          <input
+            ref={nomeRef}
+            type="text"
+            value={nomeCliente}
+            onChange={(e) => setNomeCliente(e.target.value)}
+            onFocus={handleNomeFocus}
+            onBlur={handleNomeBlur}
+            placeholder="Digite o nome do cliente"
+            className="flex-1 bg-black border border-green-500 text-green-400 font-mono text-sm p-1.5 focus:outline-none focus:ring-1 focus:ring-green-500 disabled:opacity-50"
+            disabled={carregando}
+          />
+        </div>
+        <div className="flex items-center gap-4 flex-1">
+          <label className="text-green-400 font-mono text-xs w-32 shrink-0">
+            IP DO CLIENTE:
+          </label>
+          <input
+            ref={ipRef}
+            type="text"
+            value={ip}
+            onChange={(e) => setIp(e.target.value)}
+            onFocus={handleIpFocus}
+            onBlur={handleIpBlur}
+            placeholder="192.168.1.1"
+            className="flex-1 bg-black border border-green-500 text-green-400 font-mono text-sm p-1.5 focus:outline-none focus:ring-1 focus:ring-green-500 disabled:opacity-50"
+            disabled={carregando}
+          />
+        </div>
       </div>
 
       {/* Mensagens de Feedback */}

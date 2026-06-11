@@ -18,7 +18,7 @@ services:
       - ./backend/data/reports:/app/data/reports
     # AMARRAÇÃO ESTRITA NO LOCALHOST (127.0.0.1): Bloqueia qualquer acesso externo da rede física
     ports:
-      - "127.0.0.1:5190:5190"
+      - "5190:5190"
     networks:
       - rede-privada-auditoria
     restart: always
@@ -30,6 +30,9 @@ services:
     # AMARRAÇÃO ESTRITA NO LOCALHOST: Interface do painel acessível apenas na máquina do auditor
     ports:
       - "127.0.0.1:3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     networks:
       - rede-privada-auditoria
     restart: always

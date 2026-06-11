@@ -14,6 +14,10 @@
     "nikto",
     "nikto",
     "nikto",
+    "nikto",
+    "nikto",
+    "nikto",
+    "nikto",
     "nikto"
   ],
   "vulnerabilidades_encontradas": [],
@@ -57,6 +61,26 @@
       "timestamp": "2026-06-04 20:32:30",
       "tipo": "gobuster",
       "prova": "Diret\u00f3rios enumerados via GOBUSTER"
+    },
+    {
+      "timestamp": "2026-06-11 20:20:46",
+      "tipo": "gobuster",
+      "prova": "Diret\u00f3rios enumerados via GOBUSTER"
+    },
+    {
+      "timestamp": "2026-06-11 21:03:27",
+      "tipo": "gobuster",
+      "prova": "Diret\u00f3rios enumerados via GOBUSTER"
+    },
+    {
+      "timestamp": "2026-06-11 21:09:44",
+      "tipo": "gobuster",
+      "prova": "Diret\u00f3rios enumerados via GOBUSTER"
+    },
+    {
+      "timestamp": "2026-06-11 21:15:02",
+      "tipo": "gobuster",
+      "prova": "Diret\u00f3rios enumerados via GOBUSTER"
     }
   ],
   "asn_info": {
@@ -65,5 +89,5 @@
   "cgnat_detectado": false,
   "subdominios_encontrados": [],
   "bandeiras_disponiveis": [],
-  "ultima_verificacao": "2026-06-04 20:32:30"
+  "ultima_verificacao": "2026-06-11 21:15:02"
 }

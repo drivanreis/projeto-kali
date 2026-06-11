@@ -60,7 +60,7 @@ export const AuditoriaVulnerabilidades: React.FC<AuditoriaVulnerabilidadesProps>
   };
 
   return (
-    <div className="border-2 border-green-500 bg-black w-full flex flex-col overflow-hidden">
+    <div className="border-2 border-green-500 bg-black w-full flex flex-col overflow-hidden h-[calc(100vh-60px)]">
       {/* Header */}
       <div className="border-b border-green-500 p-4 bg-black flex-shrink-0 flex justify-between items-center">
         <div className="text-green-400 font-mono font-bold text-sm">
@@ -76,7 +76,7 @@ export const AuditoriaVulnerabilidades: React.FC<AuditoriaVulnerabilidadesProps>
       </div>
 
       {/* Filtros e Stats */}
-      <div className="p-4 border-b border-green-950">
+      <div className="p-4 border-b border-green-950 flex-shrink-0">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
           <ComboBoxCliente
             clientes={clientesIps}
@@ -108,7 +108,7 @@ export const AuditoriaVulnerabilidades: React.FC<AuditoriaVulnerabilidadesProps>
       </div>
 
       {/* Lista de cards (scrollable) */}
-      <div className="overflow-y-auto p-4 max-h-[400px] min-h-[250px] bg-black">
+      <div className="overflow-y-auto p-4 flex-1 bg-black">
         {vulnerabilidadesFiltradas.length === 0 ? (
           <div className="text-gray-500 text-center font-mono text-xs py-8 border border-dashed border-green-950">
             Nenhuma vulnerabilidade encontrada com os filtros selecionados
@@ -126,7 +126,7 @@ export const AuditoriaVulnerabilidades: React.FC<AuditoriaVulnerabilidadesProps>
       </div>
 
       {/* Botões do rodapé */}
-      <div className="border-t border-green-500 p-4 bg-black flex flex-row gap-4">
+      <div className="border-t border-green-500 p-4 bg-black flex flex-row gap-4 flex-shrink-0">
         <button
           onClick={handleGerarLaudo}
           className="flex-1 bg-green-900 hover:bg-green-700 text-green-400 font-mono text-xs py-2 px-3 border border-green-500 transition-colors"

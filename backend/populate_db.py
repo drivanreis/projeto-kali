@@ -281,19 +281,19 @@ class PopuladorBancoDados:
             {
                 "criticidade": "critica",
                 "titulo": "SQL Injection detectado",
-                "descricao": "Formulário vulnerável a injeção de SQL detectado na operação",
+                "descricao": f"Formulário de login em {self.IP_HISTORICO}:8080/login é vulnerável a SQL Injection via parâmetro 'user'.",
                 "correcao": "Usar prepared statements e validação de entrada"
             },
             {
                 "criticidade": "alta",
                 "titulo": "Credenciais fracas expostas",
-                "descricao": "Credenciais padrão ou fracas foram encontradas",
+                "descricao": f"Credenciais padrão ou fracas foram encontradas em {self.IP_HISTORICO}:22 SSH.",
                 "correcao": "Implementar política de senhas forte e MFA"
             },
             {
                 "criticidade": "media",
                 "titulo": "Configuração de segurança inadequada",
-                "descricao": "Parâmetros de segurança não estão otimizados",
+                "descricao": f"Parâmetros de segurança não estão otimizados em {self.IP_HISTORICO}:8080/config.",
                 "correcao": "Seguir guias de hardening do OWASP"
             },
         ]

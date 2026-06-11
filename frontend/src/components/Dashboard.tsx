@@ -95,16 +95,16 @@ export const Dashboard: React.FC = () => {
         <div className="col-span-12">
           {abaAtiva === 1 && (
             <>
-              {/* Cadastro de Cliente */}
+              {/* CLIENTES CADASTRADOS */}
+              <HistoricoClientesMemo refresh={clienteCriadoRefresh} />
+
+              {/* NOVO CLIENTE */}
               <FormularioCadastroClienteMemo
                 onClienteCriado={() => setClienteCriadoRefresh((prev) => prev + 1)}
                 refresh={clienteCriadoRefresh}
               />
-
-              {/* Histórico de Clientes */}
-              <HistoricoClientesMemo refresh={clienteCriadoRefresh} />
               
-              {/* Histórico de Logs e Operações */}
+              {/* HISTÓRICO DE LOGS E OPERAÇÕES */}
               <div className="border border-green-500 p-4 bg-black">
                 <div className="text-green-400 font-mono font-bold mb-3 text-sm">
                   [ HISTÓRICO DE LOGS E OPERAÇÕES ]

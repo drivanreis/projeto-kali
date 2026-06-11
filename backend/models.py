@@ -48,8 +48,8 @@ Base = declarative_base()
 ativo_tag_association = Table(
     "ativo_tag_association",
     Base.metadata,
-    Column("ativo_id", UUID(as_uuid=True), ForeignKey("ativos.id")),
-    Column("tag_id", UUID(as_uuid=True), ForeignKey("tags.id")),
+    Column("ativo_id", String(36), ForeignKey("ativos.id")),
+    Column("tag_id", String(36), ForeignKey("tags.id")),
 )
 
 
@@ -62,7 +62,7 @@ class Ativo(Base):
     """1. TABELA: ATIVOS - Inventário de equipamentos"""
     __tablename__ = "ativos"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     tipo = Column(String(50), nullable=False)  # PC, Notebook, Celular, Impressora, IoT, Servidor, etc
     nome = Column(String(255), nullable=False)
     descricao = Column(Text)
@@ -83,8 +83,8 @@ class Identificador(Base):
     """2. TABELA: IDENTIFICADORES - Múltiplos IDs por ativo"""
     __tablename__ = "identificadores"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    ativo_id = Column(UUID(as_uuid=True), ForeignKey("ativos.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    ativo_id = Column(String(36), ForeignKey("ativos.id"), nullable=False)
     
     tipo = Column(String(50), nullable=False)  # IP, MAC, IMEI, Hostname, Serial, SSID, UUID
     valor = Column(Text, nullable=False)
@@ -99,8 +99,8 @@ class InterfaceDeRede(Base):
     """3. TABELA: INTERFACES_DE_REDE - Meios de comunicação"""
     __tablename__ = "interfaces_de_rede"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    ativo_id = Column(UUID(as_uuid=True), ForeignKey("ativos.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    ativo_id = Column(String(36), ForeignKey("ativos.id"), nullable=False)
     
     tipo = Column(String(50), nullable=False)  # Ethernet, Wi-Fi, Bluetooth, LTE, 5G, Satélite, IR, Rádio
     mac = Column(String(17))  # XX:XX:XX:XX:XX:XX
@@ -118,8 +118,8 @@ class Coleta(Base):
     """4. TABELA: COLETAS - Histórico de coletas de informações"""
     __tablename__ = "coletas"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    ativo_id = Column(UUID(as_uuid=True), ForeignKey("ativos.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    ativo_id = Column(String(36), ForeignKey("ativos.id"), nullable=False)
     
     coletado_em = Column(DateTime, nullable=False)
     origem = Column(String(100), nullable=False)  # Agente Windows, Frontend, Importação TXT/JSON, API
@@ -136,10 +136,10 @@ class DadosBrutos(Base):
     """5. TABELA: DADOS_BRUTOS - Dados flexíveis em JSONB"""
     __tablename__ = "dados_brutos"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    coleta_id = Column(UUID(as_uuid=True), ForeignKey("coletas.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    coleta_id = Column(String(36), ForeignKey("coletas.id"), nullable=False)
     
-    json_dados = Column(JSONB, nullable=False)  # JSONB do PostgreSQL
+    json_dados = Column(JSON, nullable=False)  # JSON (compatível com SQLite)
     
     criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
 
@@ -151,13 +151,13 @@ class Evento(Base):
     """6. TABELA: EVENTOS - Histórico e auditoria de mudanças"""
     __tablename__ = "eventos"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    ativo_id = Column(UUID(as_uuid=True), ForeignKey("ativos.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    ativo_id = Column(String(36), ForeignKey("ativos.id"), nullable=False)
     
     tipo = Column(String(100), nullable=False)  # descoberta, ip_alterado, firmware_alterado, online, offline
     descricao = Column(Text)
-    dados_anteriores = Column(JSONB)  # Snapshot do antes
-    dados_novos = Column(JSONB)  # Snapshot do depois
+    dados_anteriores = Column(JSON)  # Snapshot do antes
+    dados_novos = Column(JSON)  # Snapshot do depois
     
     criado_em = Column(DateTime, default=datetime.utcnow, nullable=False)
 
@@ -169,7 +169,7 @@ class Tag(Base):
     """7. TABELA: TAGS - Classificação e agrupamento de ativos"""
     __tablename__ = "tags"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     nome = Column(String(100), unique=True, nullable=False)
     cor = Column(String(7), default="#808080")  # Código hex
     descricao = Column(Text)
@@ -291,7 +291,7 @@ class AttackHistory(Base):
     # Resultados
     success = Column(Boolean, default=False)
     response_code = Column(Integer)
-    response_data = Column(JSONB)  # Alterado de Text para JSONB para payloads dinâmicos
+    response_data = Column(JSON)  # Alterado de Text para JSON para payloads dinâmicos
     
     # Metadados
     duration_ms = Column(Float)
